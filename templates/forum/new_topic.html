@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Topic in {{ board.name }} - TieSinger Forum</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/forum.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="forum-main container">
+        <section class="forum-navigation">
+            <a href="/forum">Forum Home</a> &gt; <a href="/forum/board/{{ board.id }}">{{ board.name }}</a> &gt; New Topic
+        </section>
+
+        <section class="new-topic-section">
+            <h2>Start a New Topic in {{ board.name }}</h2>
+            <form action="/forum/board/{{ board.id }}/new-topic" method="post" class="new-topic-form">
+                <div class="form-group">
+                    <label for="title">Topic Title:</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="post_text">First Post Content (Markdown supported):</label>
+                    <textarea id="post_text" name="post_text" rows="15" required></textarea>
+                    <div class="preview-actions">
+                        <button type="button" class="btn btn-toggle-preview" data-preview-target="newTopicPreview">Show Preview</button>
+                    </div>
+                    <div id="newTopicPreview" class="markdown-preview" style="display: none;"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Topic</button>
+                {% if error %}
+                    <p class="error-message">{{ error }}</p>
+                {% endif %}
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 TieSinger. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/forum.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+</html>

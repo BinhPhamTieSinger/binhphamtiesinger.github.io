@@ -148,6 +148,23 @@ body {
     box-shadow: 0 6px 18px rgba(58, 90, 255, 0.18);
 }
 
+.btn-secondary {
+    background-color: #dc3545;  /* Red color */
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #c82333;  /* Darker red on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(220, 53, 69, 0.18);
+}
+
 /* Small avatar used in nav */
 .nav-avatar {
     width: 36px;
@@ -211,6 +228,59 @@ body {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+}
+
+/* Notifications styles */
+.notifications-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    transition: background-color 0.2s;
+}
+
+.notification-item:not(.read) {
+    background-color: #f0f4ff;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-text {
+    margin-bottom: 5px;
+}
+
+.notification-meta {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.user-mention {
+    color: #5a7dff;
+    font-weight: 600;
 }
 
 /* Responsive tweaks */

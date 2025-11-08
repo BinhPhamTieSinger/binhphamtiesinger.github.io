@@ -1,7 +1,6 @@
 # main.py
 from fastapi import FastAPI, Request, Form, Response, HTTPException, Depends, status
 from fastapi import FastAPI, BackgroundTasks
-# --- MODIFIED: Cleaned up imports ---
 from fastapi import File, UploadFile, BackgroundTasks
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -14,10 +13,10 @@ from typing import Optional, List, Dict, Any
 import sqlite3
 import dotenv
 from pathlib import Path
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 # Local imports
-from database import get_db_connection, init_db
+from database import get_db_connection, init_db # init_db is now more comprehensive
 from security import hash_password, verify_password, sanitize_input, get_password_strength, create_reset_token
 from email_utils import send_password_reset_email
 
@@ -120,7 +119,6 @@ async def read_root(request: Request):
 @app.get("/login", response_class=HTMLResponse)
 async def login_get(request: Request):
     user_data = get_current_user_data(request)
-    # --- MODIFIED: Check for success message from reset ---
     success_message = request.session.pop("success", None)
     return templates.TemplateResponse("login.html", {"request": request, "user_data": user_data, "success": success_message})
 
@@ -205,18 +203,15 @@ async def forgot_password_post(
     user_data = get_current_user_data(request)
     conn = get_db_connection()
     cursor = conn.cursor()
-    user = cursor.execute("SELECT id, email, username FROM users WHERE email = ?", (sanitize_input(email),)).fetchone() # --- MODIFIED: Get username ---
+    user = cursor.execute("SELECT id, email, username FROM users WHERE email = ?", (sanitize_input(email),)).fetchone()
 
     if not user:
-        # Don't reveal if user exists, just show a generic success message
         conn.close()
         return templates.TemplateResponse("forgot_password.html", {"request": request, "user_data": user_data, "success": "If an account with that email exists, reset instructions will be sent."})
 
-    # Generate token and expiry
     token, expires_at = create_reset_token()
     
     try:
-        # Store token in database
         cursor.execute(
             "INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
             (user["id"], token, expires_at)
@@ -228,21 +223,15 @@ async def forgot_password_post(
         return templates.TemplateResponse("forgot_password.html", {"request": request, "user_data": user_data, "error": f"An error occurred: {e}"})
     finally:
         conn.close()
-
-    # --- MODIFIED: Send email in background ---
     
-    # Create the absolute reset link
     reset_link = request.url_for('reset_password_get', token=token)
     
-    # Add the email-sending job to the background
     background_tasks.add_task(
         send_password_reset_email,
         to_email=user["email"],
         username=user["username"],
-        reset_link=str(reset_link) # Pass the full URL
+        reset_link=str(reset_link)
     )
-
-    # --- DELETED: Removed the print() statements ---
 
     return templates.TemplateResponse("forgot_password.html", {"request": request, "user_data": user_data, "success": "If an account with that email exists, reset instructions have been sent." })
 
@@ -253,7 +242,6 @@ async def reset_password_get(request: Request, token: str):
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Validate token
     token_data = cursor.execute(
         "SELECT user_id, expires_at FROM password_reset_tokens WHERE token = ? AND expires_at > ?",
         (token, datetime.now())
@@ -264,7 +252,6 @@ async def reset_password_get(request: Request, token: str):
     if not token_data:
         return templates.TemplateResponse("reset_password.html", {"request": request, "user_data": user_data, "error": "This reset link is invalid or has expired.", "invalid_token": True})
     
-    # Token is valid, show the password reset form
     return templates.TemplateResponse("reset_password.html", {"request": request, "user_data": user_data, "token": token})
 
 @app.post("/reset-password", response_class=HTMLResponse)
@@ -279,7 +266,6 @@ async def reset_password_post(
     if new_password != confirm_password:
         return templates.TemplateResponse("reset_password.html", {"request": request, "user_data": user_data, "token": token, "error": "Passwords do not match."})
 
-    # Check password strength
     strength = get_password_strength(new_password)
     if strength["score"] < 60:
         return templates.TemplateResponse("reset_password.html", {"request": request, "user_data": user_data, "token": token, "error": "Password is too weak. " + " ".join(strength["feedback"])})
@@ -287,7 +273,6 @@ async def reset_password_post(
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Validate token again
     token_data = cursor.execute(
         "SELECT id, user_id, expires_at FROM password_reset_tokens WHERE token = ? AND expires_at > ?",
         (token, datetime.now())
@@ -297,14 +282,12 @@ async def reset_password_post(
         conn.close()
         return templates.TemplateResponse("reset_password.html", {"request": request, "user_data": user_data, "error": "This reset link is invalid or has expired.", "invalid_token": True})
 
-    # Token is valid, update the user's password
     try:
         new_hashed_password = hash_password(new_password)
         cursor.execute(
             "UPDATE users SET hashed_password = ? WHERE id = ?",
             (new_hashed_password, token_data["user_id"])
         )
-        # Invalidate the token
         cursor.execute("DELETE FROM password_reset_tokens WHERE id = ?", (token_data["id"],))
         conn.commit()
     except Exception as e:
@@ -314,7 +297,6 @@ async def reset_password_post(
     finally:
         conn.close()
 
-    # Redirect to login with a success message
     request.session["success"] = "Password reset successfully. Please log in with your new password."
     return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
 
@@ -892,3 +874,601 @@ async def get_project_api(request: Request, project_id: int):
         "image_url": project["image_url"],
         "author_username": project["author_username"]
     })
+
+# --- NEW FORUM ROUTES ---
+
+@app.get("/forum", response_class=HTMLResponse)
+async def forum_home(request: Request):
+    user_data = get_current_user_data(request)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get categories with boards and their stats
+    categories_db = cursor.execute("""
+        SELECT 
+            c.id, c.name, c.display_order,
+            b.id as board_id, b.name as board_name, b.description,
+            COUNT(DISTINCT t.id) as topic_count,
+            COUNT(DISTINCT p.id) as post_count
+        FROM forum_categories c
+        LEFT JOIN forum_boards b ON c.id = b.category_id
+        LEFT JOIN forum_topics t ON b.id = t.board_id
+        LEFT JOIN forum_posts p ON t.id = p.topic_id
+        GROUP BY c.id, b.id
+        ORDER BY c.display_order, b.display_order
+    """).fetchall()
+
+    # Get overview stats
+    stats = cursor.execute("""
+        SELECT 
+            (SELECT COUNT(*) FROM forum_topics) as total_topics,
+            (SELECT COUNT(*) FROM forum_posts) as total_posts,
+            (SELECT COUNT(*) FROM users) as total_members,
+            (SELECT username FROM users ORDER BY created_at DESC LIMIT 1) as newest_member
+    """).fetchone()
+
+    # Process categories and boards
+    categories = {}
+    for row in categories_db:
+        if row['id'] not in categories:
+            categories[row['id']] = {
+                'id': row['id'],
+                'name': row['name'],
+                'boards': []
+            }
+        if row['board_id']:
+            categories[row['id']]['boards'].append({
+                'id': row['board_id'],
+                'name': row['board_name'],
+                'description': row['description'],
+                'topic_count': row['topic_count'] or 0,
+                'post_count': row['post_count'] or 0
+            })
+
+    conn.close()
+
+    return templates.TemplateResponse("forum/forum_home.html", {
+        "request": request,
+        "user_data": user_data,
+        "categories": list(categories.values()),
+        "total_topics": stats['total_topics'],
+        "total_posts": stats['total_posts'],
+        "total_members": stats['total_members'],
+        "newest_member": stats['newest_member'] or "No members yet",
+        "latest_news": {
+            "text": "Welcome to our new forum!",
+            "link": "#"
+        }
+    })
+
+@app.get("/forum/board/{board_id}", response_class=HTMLResponse)
+async def forum_board_detail(request: Request, board_id: int):
+    user_data = get_current_user_data(request)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    board = cursor.execute("SELECT id, name, description FROM forum_boards WHERE id = ?", (board_id,)).fetchone()
+    if not board:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Board not found")
+    
+    def format_datetime(dt_str):
+        try:
+            # Parse the datetime string
+            dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+            # Store all times in UTC
+            dt = dt.replace(tzinfo=timezone.utc)
+            # Convert to local timezone for display
+            local_dt = dt.astimezone()
+            return local_dt.strftime('%b %d, %Y %H:%M')
+        except Exception as e:
+            print(f"Date formatting error: {e}")
+            return dt_str
+
+    # Update query to include post counts and last post info
+    # In the board_detail route
+    topics_db = cursor.execute("""
+        SELECT 
+            t.*,
+            u.username as author_username,
+            (SELECT COUNT(*) FROM forum_posts WHERE topic_id = t.id) - 1 as reply_count,
+            (SELECT MAX(created_at) FROM forum_posts WHERE topic_id = t.id) as last_post_date,
+            (SELECT username FROM users WHERE id = (
+                SELECT user_id FROM forum_posts 
+                WHERE topic_id = t.id 
+                ORDER BY created_at DESC LIMIT 1
+            )) as last_post_author
+        FROM forum_topics t
+        JOIN users u ON t.user_id = u.id
+        WHERE t.board_id = ?
+        ORDER BY last_post_date DESC NULLS LAST
+    """, (board_id,)).fetchall()
+
+    topics_list = []
+    for topic_row in topics_db:
+        topic_dict = dict(topic_row)
+        # Format dates using the same function as topic detail
+        if topic_dict["last_post_date"]:
+            topic_dict["last_post_date"] = format_datetime(topic_dict["last_post_date"])
+        if topic_dict["created_at"]:
+            topic_dict["created_at"] = format_datetime(topic_dict["created_at"])
+        topics_list.append(topic_dict)
+    
+    conn.close()
+
+    return templates.TemplateResponse("forum/board_detail.html", {
+        "request": request,
+        "user_data": user_data,
+        "board": dict(board),
+        "topics": topics_list
+    })
+
+@app.get("/forum/board/{board_id}/new-topic", response_class=HTMLResponse)
+async def new_topic_get(request: Request, board_id: int):
+    user_data = get_current_user_data(request)
+    if not user_data:
+        request.session["redirect_after_login"] = f"/forum/board/{board_id}/new-topic"
+        return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
+
+    conn = get_db_connection()
+    board = conn.execute("SELECT id, name FROM forum_boards WHERE id = ?", (board_id,)).fetchone()
+    conn.close()
+
+    if not board:
+        raise HTTPException(status_code=404, detail="Board not found")
+
+    return templates.TemplateResponse("forum/new_topic.html", {
+        "request": request,
+        "user_data": user_data,
+        "board": dict(board)
+    })
+
+@app.post("/forum/board/{board_id}/new-topic", response_class=RedirectResponse)
+async def new_topic_post(
+    request: Request,
+    board_id: int,
+    title: str = Form(...),
+    post_text: str = Form(...)
+):
+    user_id = get_current_user_id(request)
+    if not user_id:
+        request.session["redirect_after_login"] = f"/forum/board/{board_id}/new-topic"
+        return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    board = cursor.execute("SELECT id FROM forum_boards WHERE id = ?", (board_id,)).fetchone()
+    if not board:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Board not found")
+    
+    sanitized_title = sanitize_input(title)
+    sanitized_post_text = sanitize_input(post_text) # Basic sanitization, consider Markdown rendering library
+
+    try:
+        # Create the topic
+        cursor.execute(
+            "INSERT INTO forum_topics (board_id, user_id, title) VALUES (?, ?, ?)",
+            (board_id, user_id, sanitized_title)
+        )
+        topic_id = cursor.lastrowid
+
+        # Create the first post in the topic
+        cursor.execute(
+            "INSERT INTO forum_posts (topic_id, user_id, post_text) VALUES (?, ?, ?)",
+            (topic_id, user_id, sanitized_post_text)
+        )
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        print(f"Error creating new topic: {e}")
+        # Redirect back to new topic form with an error (need to pass error to template)
+        return RedirectResponse(url=f"/forum/board/{board_id}/new-topic?error=Failed+to+create+topic.", status_code=status.HTTP_302_FOUND)
+    finally:
+        conn.close()
+
+    return RedirectResponse(url=f"/forum/topic/{topic_id}", status_code=status.HTTP_302_FOUND)
+
+
+@app.get("/forum/topic/{topic_id}", response_class=HTMLResponse)
+async def forum_topic_detail(request: Request, topic_id: int):
+    user_data = get_current_user_data(request)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Only increment view if coming from board page or direct link
+    referer = request.headers.get('referer', '')
+    user_ip = request.client.host
+    
+    # Get current views count first
+    views_count = cursor.execute("""
+        SELECT COUNT(DISTINCT user_ip) as unique_views 
+        FROM topic_views 
+        WHERE topic_id = ?
+    """, (topic_id,)).fetchone()["unique_views"]
+
+    if 'board' in referer or not referer:
+        try:
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # Insert or update view record
+            cursor.execute("""
+                INSERT INTO topic_views (topic_id, user_ip, last_viewed)
+                VALUES (?, ?, ?)
+                ON CONFLICT(topic_id, user_ip) 
+                DO UPDATE SET last_viewed = ?
+                WHERE datetime(last_viewed) < datetime('now', '-5 minutes')
+            """, (topic_id, user_ip, now, now))
+            
+            # Update topic views to match unique viewers
+            cursor.execute("""
+                UPDATE forum_topics 
+                SET views = (
+                    SELECT COUNT(DISTINCT user_ip) 
+                    FROM topic_views 
+                    WHERE topic_id = ?
+                )
+                WHERE id = ?
+            """, (topic_id, topic_id))
+            
+            conn.commit()
+        except Exception as e:
+            print(f"Error updating view count: {e}")
+            conn.rollback()
+
+    topic = cursor.execute(
+        """
+        SELECT ft.id, ft.title, ft.created_at, ft.views,
+               u.username AS author_username, ft.user_id AS author_id,
+               fb.id AS board_id, fb.name AS board_name
+        FROM forum_topics ft
+        JOIN users u ON ft.user_id = u.id
+        JOIN forum_boards fb ON ft.board_id = fb.id
+        WHERE ft.id = ?
+        """,
+        (topic_id,)
+    ).fetchone()
+
+    if not topic:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Topic not found")
+
+    posts_db = cursor.execute(
+        """
+        SELECT fp.id, fp.post_text, fp.created_at, fp.updated_at,
+               u.username AS author_username, u.id AS user_id,
+               u.avatar_url AS author_avatar_url
+        FROM forum_posts fp
+        JOIN users u ON fp.user_id = u.id
+        WHERE fp.topic_id = ?
+        ORDER BY fp.created_at ASC
+        """,
+        (topic_id,)
+    ).fetchall()
+
+    def format_datetime(dt_str):
+        try:
+            # Parse the datetime string
+            dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+            # Get the local timezone
+            local_tz = datetime.now().astimezone().tzinfo
+            # Convert to local time
+            local_dt = dt.replace(tzinfo=timezone.utc).astimezone(local_tz)
+            return local_dt.strftime('%b %d, %Y %H:%M')
+        except Exception as e:
+            print(f"Date formatting error: {e}")
+            return dt_str
+
+    posts_list = []
+    for post_row in posts_db:
+        post_dict = dict(post_row)
+        if post_dict["created_at"]:
+            post_dict["created_at"] = format_datetime(post_dict["created_at"])
+        if post_dict["updated_at"]:
+            post_dict["updated_at"] = format_datetime(post_dict["updated_at"])
+        
+        # Handle avatar URL (similar to get_current_user_data)
+        author_avatar = post_dict["author_avatar_url"]
+        if not author_avatar:
+             author_avatar = "/static/assets/images/default-avatar.png"
+        elif author_avatar.startswith("/static/assets/avatars/"):
+            avatar_file = AVATAR_DIR / Path(author_avatar).name
+            if not avatar_file.exists():
+                author_avatar = "/static/assets/images/default-avatar.png"
+        post_dict["author_avatar"] = author_avatar
+        posts_list.append(post_dict)
+
+    conn.close()
+
+    topic_dict = dict(topic)
+    if topic_dict["created_at"]:
+        topic_dict["created_at"] = datetime.strptime(topic_dict["created_at"], '%Y-%m-%d %H:%M:%S').strftime('%b %d, %Y %H:%M')
+
+    return templates.TemplateResponse("forum/topic_detail.html", {
+        "request": request,
+        "user_data": user_data,
+        "topic": topic_dict,
+        "board": {"id": topic_dict["board_id"], "name": topic_dict["board_name"]},
+        "posts": posts_list,
+        "is_admin": is_admin_user(request)
+    })
+
+@app.post("/forum/topic/{topic_id}/reply", response_class=RedirectResponse)
+async def reply_to_topic(topic_id: int, request: Request, post_text: str = Form(...)):
+    user_id = get_current_user_id(request)
+    if not user_id:
+        request.session["redirect_after_login"] = f"/forum/topic/{topic_id}"
+        return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Get topic info for notifications
+        topic = cursor.execute("SELECT title FROM forum_topics WHERE id = ?", (topic_id,)).fetchone()
+        if not topic:
+            raise HTTPException(status_code=404, detail="Topic not found")
+
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        cursor.execute(
+            "INSERT INTO forum_posts (topic_id, user_id, post_text, created_at) VALUES (?, ?, ?, ?)",
+            (topic_id, user_id, post_text, now)
+        )
+        new_post_id = cursor.lastrowid
+
+        # Handle mentions
+        mentioned_users = extract_mentions(post_text)
+        if mentioned_users:
+            for username in mentioned_users:
+                user = cursor.execute(
+                    "SELECT id FROM users WHERE username = ?", 
+                    (username,)
+                ).fetchone()
+                if user and user["id"] != user_id:  # Don't notify self-mentions
+                    create_mention_notification(
+                        cursor, user["id"], user_id, new_post_id, topic_id, topic["title"]
+                    )
+
+        conn.commit()
+        return RedirectResponse(url=f"/forum/topic/{topic_id}#post-{new_post_id}", status_code=status.HTTP_302_FOUND)
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.get("/api/forum/boards/{category_id}")
+async def get_boards_by_category(category_id: int):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        boards = cursor.execute("""
+            SELECT b.id, b.name, b.description 
+            FROM forum_boards b
+            WHERE b.category_id = ?
+            ORDER BY b.display_order
+        """, (category_id,)).fetchall()
+        
+        return [dict(board) for board in boards]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.post("/forum/post/{post_id}/edit")
+async def edit_forum_post(request: Request, post_id: int, post_text: str = Form(...)):
+    user_data = get_current_user_data(request)
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    post = cursor.execute("""
+        SELECT p.*, t.id as topic_id 
+        FROM forum_posts p
+        JOIN forum_topics t ON p.topic_id = t.id
+        WHERE p.id = ?
+    """, (post_id,)).fetchone()
+    
+    if not post:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Post not found")
+    
+    if post["user_id"] != user_data["id"] and not is_admin_user(request):
+        conn.close()
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    try:
+        # Get current time in local timezone
+        local_now = datetime.now().astimezone()
+        # Convert to UTC for storage
+        utc_now = local_now.astimezone(timezone.utc)
+        
+        cursor.execute(
+            "UPDATE forum_posts SET post_text = ?, updated_at = ? WHERE id = ?",
+            (post_text, utc_now.strftime('%Y-%m-%d %H:%M:%S'), post_id)
+        )
+        conn.commit()
+        return {"success": True}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.post("/forum/post/{post_id}/delete")
+async def delete_forum_post(request: Request, post_id: int):
+    user_data = get_current_user_data(request)
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Get post info including if it's the first post
+        post = cursor.execute("""
+            SELECT p.*, 
+                   (SELECT MIN(id) FROM forum_posts WHERE topic_id = p.topic_id) as first_post_id
+            FROM forum_posts p 
+            WHERE p.id = ?
+        """, (post_id,)).fetchone()
+        
+        if not post:
+            raise HTTPException(status_code=404, detail="Post not found")
+            
+        # Only allow delete if user is author or admin
+        if post["user_id"] != user_data["id"] and not is_admin_user(request):
+            raise HTTPException(status_code=403, detail="Not authorized to delete this post")
+            
+        # Don't allow deletion of first post in topic
+        if post["id"] == post["first_post_id"]:
+            raise HTTPException(status_code=403, detail="Cannot delete the first post of a topic")
+        
+        cursor.execute("DELETE FROM forum_posts WHERE id = ?", (post_id,))
+        conn.commit()
+        return {"success": True}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.post("/api/forum/create-topic")
+async def create_topic_api(
+    request: Request,
+    title: str = Form(...),
+    content: str = Form(...),  # Changed from post_text to match frontend
+    board_id: int = Form(...)
+):
+    user_id = get_current_user_id(request)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Get current time in local timezone and convert to UTC for storage
+        local_now = datetime.now().astimezone()
+        utc_now = local_now.astimezone(timezone.utc)
+        now = utc_now.strftime('%Y-%m-%d %H:%M:%S')
+        
+        cursor.execute(
+            "INSERT INTO forum_topics (board_id, user_id, title, created_at, updated_at, views) VALUES (?, ?, ?, ?, ?, 0)",
+            (board_id, user_id, title, now, now)
+        )
+        topic_id = cursor.lastrowid
+        
+        cursor.execute(
+            "INSERT INTO forum_posts (topic_id, user_id, post_text, created_at) VALUES (?, ?, ?, ?)",
+            (topic_id, user_id, content, now)
+        )
+        
+        conn.commit()
+        return {"topic_id": topic_id}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.delete("/forum/post/{post_id}")
+async def delete_forum_post(request: Request, post_id: int):
+    user_data = get_current_user_data(request)
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("DELETE FROM forum_posts WHERE id = ? AND user_id = ?", (post_id, user_data['id']))
+        conn.commit()
+        return {"success": True}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.post("/forum/topic/{topic_id}/delete")
+async def delete_forum_topic(request: Request, topic_id: int):
+    user_data = get_current_user_data(request)
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Check if user is topic author
+        topic = cursor.execute("""
+            SELECT user_id, board_id FROM forum_topics WHERE id = ?
+        """, (topic_id,)).fetchone()
+        
+        if not topic:
+            raise HTTPException(status_code=404, detail="Topic not found")
+            
+        if topic["user_id"] != user_data["id"] and not is_admin_user(request):
+            raise HTTPException(status_code=403, detail="Not authorized to delete this topic")
+        
+        # Delete all posts first (due to foreign key constraints)
+        cursor.execute("DELETE FROM forum_posts WHERE topic_id = ?", (topic_id,))
+        
+        # Delete the topic
+        cursor.execute("DELETE FROM forum_topics WHERE id = ?", (topic_id,))
+        
+        conn.commit()
+        return {"success": True}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+def extract_mentions(text: str) -> list:
+    """Extract usernames from @mentions in text"""
+    import re
+    mentions = re.findall(r'@(\w+)', text)
+    return list(set(mentions))  # Remove duplicates
+
+def create_mention_notification(cursor, mentioned_user_id: int, source_user_id: int, post_id: int, topic_id: int, topic_title: str):
+    """Create a notification for mentioned user"""
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    cursor.execute("""
+        INSERT INTO notifications (
+            user_id, type, content, link, source_id, source_type, source_user_id, created_at
+        ) VALUES (?, 'mention', ?, ?, ?, 'forum_post', ?, ?)
+    """, (
+        mentioned_user_id,
+        f"You were mentioned in topic: {topic_title}",
+        f"/forum/topic/{topic_id}#post-{post_id}",
+        post_id,
+        source_user_id,
+        now
+    ))
+
+@app.get("/api/notifications")
+async def get_notifications(request: Request):
+    user_data = get_current_user_data(request)
+    if not user_data:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    notifications = cursor.execute("""
+        SELECT n.*, u.username as source_username, u.avatar_url as source_avatar_url
+        FROM notifications n
+        LEFT JOIN users u ON n.source_user_id = u.id
+        WHERE n.user_id = ? AND n.is_read = 0
+        ORDER BY n.created_at DESC
+        LIMIT 50
+    """, (user_data["id"],)).fetchall()
+    
+    conn.close()
+    return [dict(n) for n in notifications]
+

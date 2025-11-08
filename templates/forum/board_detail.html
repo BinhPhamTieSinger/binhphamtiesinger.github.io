@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ board.name }} - TieSinger Forum</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/forum.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="forum-main container">
+        <section class="forum-navigation">
+            <a href="/forum">Forum Home</a> &gt; <a href="/forum/board/{{ board.id }}">{{ board.name }}</a>
+        </section>
+
+        <section class="board-topics">
+            <div class="board-header">
+                <h2>{{ board.name }}</h2>
+                {% if user_data %}
+                <a href="/forum/board/{{ board.id }}/new-topic" class="btn btn-primary new-topic-btn">New Topic</a>
+                {% endif %}
+            </div>
+            <p>{{ board.description }}</p>
+
+            {% if topics %}
+            <table class="topic-list">
+                <thead>
+                    <tr>
+                        <th>Topic</th>
+                        <th>Author</th>
+                        <th>Replies</th>
+                        <th>Views</th>
+                        <th>Last Post</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for topic in topics %}
+                    <tr>
+                        <td class="topic-title">
+                            <a href="/forum/topic/{{ topic.id }}">{{ topic.title }}</a>
+                        </td>
+                        <td><a href="/profile/{{ topic.author_username }}">{{ topic.author_username }}</a></td>
+                        <td>{{ topic.reply_count }}</td>
+                        <td>{{ topic.views }}</td>
+                        <td class="last-post-info">
+                            {% if topic.last_post_author %}
+                                <span>{{ topic.last_post_date }}</span>
+                                by <a href="/profile/{{ topic.last_post_author }}">{{ topic.last_post_author }}</a>
+                            {% else %}
+                                <em>No replies</em>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="no-content-message">There are no topics in this board yet. Be the first to start one!</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 TieSinger. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/forum.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+</html>

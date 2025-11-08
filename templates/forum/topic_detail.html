@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ topic.title }} - TieSinger Forum</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/forum.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="forum-main container">
+        <section class="forum-navigation">
+            <a href="/forum">Forum Home</a> &gt; <a href="/forum/board/{{ board.id }}">{{ board.name }}</a> &gt; <a href="/forum/topic/{{ topic.id }}">{{ topic.title }}</a>
+        </section>
+
+        <section class="topic-posts">
+            <h2>{{ topic.title }}</h2>
+            <div class="topic-meta">
+                Started by <a href="/profile/{{ topic.author_username }}">{{ topic.author_username }}</a> on {{ topic.created_at }} | Views: {{ topic.views }}
+                {% if user_data and (user_data.id == topic.author_id or is_admin) %}
+                    <div class="topic-actions">
+                        <a href="#" class="delete-topic-btn" data-topic-id="{{ topic.id }}">Delete Topic</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% for post in posts %}
+            <div class="forum-post" id="post-{{ post.id }}">
+                <div class="post-sidebar">
+                    <img src="{{ post.author_avatar }}" alt="{{ post.author_username }}'s avatar" class="post-avatar">
+                    <a href="#" class="post-author">{{ post.author_username }}</a>
+                </div>
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="post-timestamp">{{ post.created_at }}</div>
+                        <div class="post-actions">
+                            {% if user_data and (user_data.id == post.user_id or is_admin) %}
+                                <a href="#" class="edit-post-btn" data-post-id="{{ post.id }}">Edit</a>
+                                {% if not loop.first %}
+                                    <a href="#" class="delete-post-btn" data-post-id="{{ post.id }}">Delete</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="post-text markdown-content" id="post-content-{{ post.id }}" data-raw="{{ post.post_text }}">
+                        {{ post.post_text | safe }}
+                    </div>
+                    {% if post.updated_at %}
+                        <div class="post-edited">
+                            Last edited {{ post.updated_at }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if user_data %}
+            <div class="new-post-form">
+                <h3>Reply to Topic</h3>
+                <form action="/forum/topic/{{ topic.id }}/reply" method="post">
+                    <textarea name="post_text" id="replyText" placeholder="Write your reply here... (Markdown supported)" required></textarea>
+                    <div class="form-actions">
+                        <div class="preview-controls">
+                            <button type="button" class="btn btn-toggle-preview" data-preview-target="replyPreview">Show Preview</button>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Post Reply</button>
+                        </div>
+                    </div>
+                    <div id="replyPreview" class="markdown-preview" style="display: none;"></div>
+                </form>
+            </div>
+            {% else %}
+            <p class="login-prompt">You must be <a href="/login">logged in</a> to post a reply.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 TieSinger. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/forum.js"></script>
+    <script src="/static/js/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <script>
+        // Placeholder for future JavaScript for editing/deleting posts if needed
+        function editPost(postId) {
+            alert('Edit post ' + postId);
+            // Implement AJAX call to /api/forum/posts/{postId} PUT method
+        }
+
+        function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                alert('Delete post ' + postId);
+                // Implement AJAX call to /api/forum/posts/{postId} DELETE method
+            }
+        }
+    </script>
+</body>
+</html>

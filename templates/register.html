@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - TieSinger</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/login.css"> <!-- New CSS for login/register -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    {% if current_username %}
+                        <li><a href="/profile">{{ current_username }}</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Register</h2>
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+            <form action="/register" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required onkeyup="checkPasswordStrength()">
+                    <div id="password-strength-meter" class="password-strength-meter">
+                        <div class="strength-bar" id="strength-bar"></div>
+                        <p id="strength-text"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="btn btn-auth">Register</button>
+            </form>
+            <div class="oauth-divider">
+                <span>OR</span>
+            </div>
+            <a href="/auth/google" class="btn btn-google">
+                <img src="/static/assets/images/icon-google.png" alt="Google Icon"> Register with Google
+            </a>
+            <p class="auth-link">Already have an account? <a href="/login">Login Now</a></p>
+        </div>
+    </div>
+
+    <script src="/static/js/index.js"></script>
+    <script>
+        // Client-side password strength checker
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
+
+            let score = 0;
+            let feedback = [];
+
+            // Length
+            if (password.length >= 8) {
+                score += 20;
+            } else {
+                feedback.push("At least 8 characters");
+            }
+
+            // Lowercase
+            if (/[a-z]/.test(password)) {
+                score += 20;
+            } else {
+                feedback.push("Lowercase letter");
+            }
+
+            // Uppercase
+            if (/[A-Z]/.test(password)) {
+                score += 20;
+            } else {
+                feedback.push("Uppercase letter");
+            }
+
+            // Numbers
+            if (/\d/.test(password)) {
+                score += 20;
+            } else {
+                feedback.push("Number");
+            }
+
+            // Special characters
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                score += 20;
+            } else {
+                feedback.push("Special character");
+            }
+
+            strengthBar.style.width = score + '%';
+            if (score < 40) {
+                strengthBar.style.backgroundColor = '#f00'; // Red
+                strengthText.textContent = 'Weak: ' + feedback.join(', ');
+            } else if (score < 80) {
+                strengthBar.style.backgroundColor = '#ffa500'; // Orange
+                strengthText.textContent = 'Medium: ' + feedback.join(', ');
+            } else {
+                strengthBar.style.backgroundColor = '#0f0'; // Green
+                strengthText.textContent = 'Strong!';
+            }
+            if (password.length === 0) {
+                strengthBar.style.width = '0%';
+                strengthText.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -67,3 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     type(); // Start the typing animation
 });
+
+// Example of setting text for an element
+document.addEventListener('DOMContentLoaded', function() {
+    const someElement = document.getElementById('someElementId'); // Replace with actual ID
+    if (someElement) {
+        someElement.textContent = 'Some text'; // Ensure the element exists before setting text
+    }
+});

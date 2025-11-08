@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TieSinger Forum</title>
+    <link rel="stylesheet" href="/static/css/index.css"> {# Main site CSS #}
+    <link rel="stylesheet" href="/static/css/forum.css"> {# Forum specific CSS #}
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    {# Removed FontAwesome, using local icons as per provided structure #}
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="forum-main container">
+        <section class="forum-header">
+            <div class="forum-header-top">
+                <h2>TieSinger Forums</h2>
+                {% if user_data %}  <!-- Changed from is_admin to user_data -->
+                    <button class="btn btn-primary create-forum-btn" id="createForumBtn">Create New Topic</button>
+                {% endif %}
+            </div>
+            <div class="forum-news">
+                <p><strong>News:</strong> {% if latest_news %}{{ latest_news.text }} <a href="{{ latest_news.link }}">Learn more</a>{% else %}No new announcements currently.{% endif %}</p>
+            </div>
+        </section>
+
+        <!-- Add this after the forum-header section -->
+        <section class="forum-overview">
+            <div class="overview-stats">
+                <div class="stat-box">
+                    <h4>Total Topics</h4>
+                    <span class="stat-number">{{ total_topics }}</span>
+                </div>
+                <div class="stat-box">
+                    <h4>Total Posts</h4>
+                    <span class="stat-number">{{ total_posts }}</span>
+                </div>
+                <div class="stat-box">
+                    <h4>Members</h4>
+                    <span class="stat-number">{{ total_members }}</span>
+                </div>
+                <div class="stat-box">
+                    <h4>Newest Member</h4>
+                    <span class="stat-text">{{ newest_member }}</span>
+                </div>
+            </div>
+        </section>
+
+        {% if categories %}
+            {% for category in categories %}
+            <section class="forum-category">
+                <h3>{{ category.name }}</h3>
+                <div class="board-grid">
+                    {% for board in category.boards %}
+                    <a href="/forum/board/{{ board.id }}" class="board-item">
+                        <div class="board-icon">
+                            {# You can use specific icons here based on board type or default #}
+                            {# Example: /static/assets/images/icon-forum.png #}
+                            <img src="/static/assets/images/icon-forum.png" alt="Board Icon"> 
+                        </div>
+                        <div class="board-info">
+                            <h4>{{ board.name }}</h4>
+                            <p>{{ board.description }}</p>
+                        </div>
+                        <div class="board-stats">
+                            <span class="stat-item">Topics: <strong>{{ board.topic_count }}</strong></span>
+                            <span class="stat-item">Posts: <strong>{{ board.post_count }}</strong></span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        {% else %}
+            <p>No forum categories or boards found.</p>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 TieSinger. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- In the Create modal: add dummy "Select Category" option first -->
+    <div class="forum-create-modal" id="forumCreateModal">
+    <div class="forum-create-content">
+        <h3>Create New Topic</h3>
+        <form class="forum-create-form" id="forumCreateForm">
+            <div class="form-group">
+                <label for="categorySelect">Select Category:</label>
+                <select id="categorySelect" name="category_id" required>
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="boardSelect">Select Board:</label>
+                <select id="boardSelect" name="board_id" required disabled>
+                    <option value="">Please select a category first</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="topicTitle">Topic Title:</label>
+                <input type="text" id="topicTitle" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="topicContent">Content:</label>
+                <textarea id="topicContent" name="content" rows="6" required></textarea>
+                <div class="preview-actions">
+                    <button type="button" class="btn btn-toggle-preview" data-preview-target="contentPreview">Show Preview</button>
+                </div>
+                <div id="contentPreview" class="markdown-preview" style="display: none;"></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancelCreateForum">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Topic</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/forum.js"></script>
+</body>
+</html>
