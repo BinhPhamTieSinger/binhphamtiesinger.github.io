@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project: {{ project.title }} - TieSinger</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- For Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body data-is-admin="{{ 'True' if is_admin else 'False' }}">
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="project-detail-main">
+        <section class="hero-banner-small">
+            <div class="container banner-content-small">
+                <h2>{{ project.title }}</h2>
+                <p data-project-id="{{ project.id }}">Created: {{ project.date }} by {{ project.author_username }}</p>
+            </div>
+        </section>
+
+        <section class="project-content-section">
+            <div class="container">
+                <div class="project-full-details">
+                    {% if project.image_url %}
+                        <img src="{{ project.image_url }}" alt="{{ project.title }}" class="project-main-image">
+                    {% endif %}
+
+                    <!-- MODIFIED: Use |safe filter to render HTML. JS will no longer process this on load. -->
+                    <div id="projectFullDescription" class="project-markdown-rendered">
+                        {{ project.description }}
+                    </div>
+
+                    <div class="project-detail-actions">
+                        {% if is_admin %}
+                            <button class="btn btn-small btn-secondary" id="editProjectBtn" data-id="{{ project.id }}">Edit Project</button>
+                            <button class="btn btn-small btn-delete" id="deleteProjectBtn" data-id="{{ project.id }}">Delete Project</button>
+                        {% endif %}
+                        <a href="/projects" class="btn btn-small btn-secondary">Back to Projects</a>
+                    </div>
+
+                    <hr class="comments-separator">
+
+                    <h4>Reactions</h4>
+                    <div class="reactions-section" id="reactionsSection">
+                        <!-- Reactions will go here -->
+                        <button class="reaction-btn {% if user_data and project.user_reaction == 'like' %}active{% endif %}" data-reaction="like" data-project-id="{{ project.id }}" {% if not user_data %}disabled{% endif %}>&#128077; <span class="reaction-count">{{ project.reactions.like }}</span></button>
+                        <button class="reaction-btn {% if user_data and project.user_reaction == 'love' %}active{% endif %}" data-reaction="love" data-project-id="{{ project.id }}" {% if not user_data %}disabled{% endif %}>&#128150; <span class="reaction-count">{{ project.reactions.love }}</span></button>
+                        <button class="reaction-btn {% if user_data and project.user_reaction == 'wow' %}active{% endif %}" data-reaction="wow" data-project-id="{{ project.id }}" {% if not user_data %}disabled{% endif %}>&#128562; <span class="reaction-count">{{ project.reactions.wow }}</span></button>
+                    </div>
+
+                    <h4>Comments</h4>
+                    
+                    <!-- NEW: Recursive macro to render comment threads -->
+                    {% macro render_comment(comment, is_admin, user_data, level=0) %}
+                        <div class="comment-item level-{{ level }}" data-comment-container-id="{{ comment.id }}">
+                            <div class="comment-thread-line"></div> <!-- For visual nesting -->
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <div class="comment-author" data-username="{{ comment.author }}">
+                                        <img src="{{ comment.author_avatar }}" alt="{{ comment.author }} avatar">
+                                        {{ comment.author }}
+                                    </div>
+                                    <div class="comment-actions">
+                                        {% if user_data %}
+                                            <button class="btn-icon btn-reply-comment" data-comment-id="{{ comment.id }}" title="Reply">↪️</button>
+                                        {% endif %}
+                                        {% if user_data and user_data.id == comment.author_id %}
+                                            <button class="btn-icon btn-edit-comment" data-comment-id="{{ comment.id }}" title="Edit">✏️</button>
+                                        {% endif %}
+                                        {% if (user_data and user_data.id == comment.author_id) or is_admin %}
+                                            <button class="btn-icon btn-delete-comment" data-comment-id="{{ comment.id }}" title="Delete">🗑️</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="comment-date">{{ comment.date }}</div>
+                                <div class="comment-body">
+                                    <!-- MODIFIED: Use |safe filter for initial render -->
+                                    <div class="comment-text-rendered">
+                                        {{ comment.text | safe }}
+                                    </div>
+                                    <div class="comment-edit-form" style="display: none;">
+                                        <!-- The JS will populate this textarea from raw text -->
+                                        <textarea class="comment-edit-textarea" rows="3">{{ comment.text }}</textarea>
+                                        <div class="comment-edit-actions">
+                                            <button class="btn btn-small btn-primary btn-save-comment" data-comment-id="{{ comment.id }}">Save</button>
+                                            <button type="button" class="btn btn-small btn-secondary btn-cancel-edit">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- This is where replies will be appended by JS when the form is moved -->
+                                <div class="comment-reply-form-container"></div>
+                            </div>
+                        </div>
+                        <!-- Render children recursively -->
+                        {% if comment.children %}
+                            <div class="comment-children">
+                                {% for child in comment.children %}
+                                    {{ render_comment(child, is_admin, user_data, level + 1) }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endmacro %}
+                    <!-- END macro -->
+
+                    <div class="comments-section" id="commentsSection">
+                        {% if project.comments %}
+                            <!-- MODIFIED: Call the recursive macro -->
+                            {% for comment in project.comments %}
+                                {{ render_comment(comment, is_admin, user_data, level=0) }}
+                            {% endfor %}
+                        {% else %}
+                            <p class="no-comments">No comments yet. Be the first!</p>
+                        {% endif %}
+                    </div>
+
+                    {% if user_data %}
+                        <!-- NEW: Container for the new comment form so it can be moved -->
+                        <div id="newCommentFormContainer">
+                            <form class="comment-form" id="commentForm" data-project-id="{{ project.id }}">
+                                <h5 id="replyingToNotice" style="display: none;"></h5> <!-- e.g., Replying to @TieSinger -->
+                                <textarea name="comment_text" placeholder="Add a comment... (Markdown supported)" required></textarea>
+                                <div class="comment-form-actions">
+                                    <button type="button" class="btn btn-small btn-secondary btn-toggle-preview" data-preview-target="commentPreview">Show Preview</button>
+                                    <button type="button" class="btn btn-small btn-secondary" id="cancelReplyBtn" style="display: none;">Cancel Reply</button>
+                                    <button type="submit" class="btn btn-small">Post Comment</button>
+                                </div>
+                                <div class="markdown-preview-container">
+                                    <!-- MODIFIED: Preview is now hidden by default -->
+                                    <div id="commentPreview" class="markdown-preview" style="display: none;"></div>
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        <p class="login-prompt">Please <a href="/login">login</a> to post comments.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 TieSinger. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Admin Add/Edit Project Modal -->
+    <div id="adminProjectModal" class="modal">
+        <div class="modal-content admin-project-content">
+            <span class="close-button">&times;</span>
+            <h3 id="adminModalTitle">Edit Project</h3>
+            <form id="adminProjectForm">
+                <input type="hidden" id="adminProjectId">
+                <div class="form-group">
+                    <label for="projectTitle">Project Title</label>
+                    <input type="text" id="projectTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectType">Project Type</label>
+                    <select id="projectType" required>
+                        <option value="current">Current Work</option>
+                        <option value="future">Future Endeavor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Full Description (Markdown supported)</label>
+                    <textarea id="projectDescription" rows="10" required></textarea>
+                </div>
+                
+                <!-- MODIFIED: Toggleable Markdown Preview for Project Description -->
+                <div class="markdown-preview-actions">
+                    <button type="button" class="btn btn-small btn-secondary btn-toggle-preview" data-preview-target="projectDescriptionPreview">Show Preview</button>
+                </div>
+                <div class="markdown-preview-container">
+                    <div id="projectDescriptionPreview" class="markdown-preview" style="display: none;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectShortDescription">Short Description (for card overview)</label>
+                    <textarea id="projectShortDescription" rows="3" maxlength="200" required></textarea>
+                    <small>Max 200 characters for the project card.</small>
+                </div>
+                <div class="form-group">
+                    <label for="projectImage">Project Image URL (Optional)</label>
+                    <input type="text" id="projectImage" placeholder="e.g., /static/assets/images/my_project.png">
+                </div>
+
+                <h4>Preview of Project Card</h4>
+                <div class="project-card-preview" id="projectCardPreview">
+                    <img id="previewCardImage" src="" alt="Project Image" style="display: none;">
+                    <h4 id="previewCardTitle">Project Title</h4>
+                    <p class="preview-card-date">Created: <span id="previewCardDate"></span></p>
+                    <p id="previewCardShortDescription">Short description for the project card...</p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="saveProjectBtn">Save Project</button>
+                    <button type="button" class="btn btn-secondary cancel-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/project_detail.js"></script>
+</body>
+</html>

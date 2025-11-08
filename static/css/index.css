@@ -1,0 +1,633 @@
+/* static/css/index.css */
+
+/* Basic Reset & Typography */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    color: #333; /* Dark gray for general text */
+    background-color: #f4f4f4; /* Light gray background */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+h1, h2, h3, h4 {
+    color: #1a1a1a; /* Almost black for headings */
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 2.8em;
+}
+
+h3 {
+    font-size: 2em;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #5a7dff; /* A nice blue for links */
+}
+
+a:hover {
+    color: #000000;
+}
+
+/* Banner Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    border: 2px solid transparent; /* Added border for secondary button */
+    cursor: pointer;
+    font-weight: 600;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #5a7dff; /* Blue button */
+    color: #fff;
+    border-color: #5a7dff;
+}
+
+.btn-primary:hover {
+    background-color: #3a5aff; /* Darker blue on hover */
+    border-color: #3a5aff;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #fff; /* White text for contrast */
+    border-color: #fff; /* White border */
+    margin-left: 15px; /* Space between buttons */
+}
+
+.btn-secondary:hover {
+    background-color: #fff; /* White background on hover */
+    color: #1a1a1a; /* Dark text on white hover */
+    border-color: #fff;
+}
+
+.btn-small {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    background-color: #5a7dff;
+    color: #fff;
+    border: none;
+}
+.btn-small:hover {
+    background-color: #3a5aff;
+}
+
+
+/* Header */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: background-color 0.3s ease, padding 0.3s ease;
+    padding: 20px 0;
+}
+
+.header.scrolled {
+    background-color: #1a1a1a; /* Dark background when scrolled */
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-name {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px; /* Adjust as needed */
+    margin-right: 10px;
+    filter: invert(100%); /* Make logo white initially for transparent header */
+    transition: filter 0.3s ease;
+}
+
+.header.scrolled .logo {
+    filter: invert(100%); /* Keep logo white when scrolled, adjust if your logo needs to change color */
+}
+
+.logo-name h1 {
+    color: #fff; /* White text for transparent header */
+    font-size: 1.8em;
+    margin-bottom: 0;
+    transition: color 0.3s ease;
+}
+
+.header.scrolled .logo-name h1 {
+    color: #fff; /* White text when scrolled */
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+}
+
+.navbar ul li {
+    margin-left: 30px;
+}
+
+.navbar ul li a {
+    color: #fff; /* White links for transparent header */
+    font-weight: 600;
+    transition: color 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.header.scrolled .navbar ul li a {
+    color: #fff; /* White links when scrolled */
+}
+
+.navbar ul li a:hover {
+    color: #8c9eff; /* Lighter blue on hover */
+}
+
+.nav-avatar {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    vertical-align: middle;
+}
+
+.header.scrolled .navbar ul li a:hover {
+    color: #8c9eff; /* White links when scrolled */
+}
+
+.menu-toggle {
+    display: none; /* Hidden on desktop */
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    height: 3px;
+    width: 25px;
+    background-color: #fff;
+    margin-bottom: 4px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hero Banner */
+.hero-banner {
+    background-image: url('/static/assets/images/background.jpg'); /* Background image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+    text-align: center;
+    padding: 150px 0 100px;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Needed for overlay */
+}
+
+.hero-banner::before { /* Dark overlay for better text readability */
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(28, 28, 28, 0.6); /* Dark semi-transparent overlay */
+    z-index: 1;
+}
+
+.banner-content {
+    position: relative; /* Bring content above the overlay */
+    z-index: 2;
+}
+
+.banner-content h2 {
+    color: #fff;
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.banner-content p {
+    font-size: 1.5em;
+    margin-bottom: 40px;
+    color: #ccc;
+    height: 1.5em; /* Ensure consistent height for typing effect */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#typed-text {
+    display: inline-block;
+}
+
+.typing-cursor {
+    display: inline-block;
+    background-color: #fff;
+    width: 2px;
+    height: 1.2em; /* Adjust height to match text */
+    animation: blink 0.7s infinite;
+    vertical-align: middle;
+    margin-left: 3px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.banner-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Space between buttons */
+}
+
+
+/* About Me Section */
+.about-me {
+    background-color: #fff;
+    padding: 80px 0;
+    text-align: center;
+}
+
+.about-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    text-align: left;
+}
+
+.about-image {
+    flex: 3; /* 30% width */
+    max-width: 30%;
+    text-align: center;
+}
+
+.about-image img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Space below image for social links */
+}
+
+.about-text {
+    flex: 7; /* 70% width */
+    max-width: 70%;
+}
+
+.about-text h3 {
+    color: #1a1a1a;
+    font-size: 2.5em;
+}
+
+/* Social links in About Me */
+.social-links-about {
+    margin-top: 20px;
+}
+
+.social-links-about a {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.social-links-about img {
+    height: 30px; /* Slightly larger icons */
+    filter: grayscale(100%) brightness(50%); /* Darker, desaturated */
+    transition: filter 0.3s ease;
+}
+
+.social-links-about img:hover {
+    filter: none; /* Original color on hover */
+}
+
+
+/* Services Section */
+.services {
+    background-color: #f0f2f5; /* Slightly darker light gray */
+    padding: 80px 0;
+    text-align: center;
+}
+
+.services h3 {
+    margin-bottom: 50px;
+    color: #1a1a1a;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.service-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.service-item:hover {
+    transform: translateY(-10px);
+}
+
+.service-item img {
+    height: 60px;
+    margin-bottom: 20px;
+}
+
+.service-item h4 {
+    color: #1a1a1a;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.service-item p {
+    color: #555;
+    margin-bottom: 25px;
+}
+
+/* Contact Me Section */
+.contact-me {
+    background-color: #333; /* Dark background */
+    color: #fff;
+    padding: 80px 0;
+    text-align: center;
+}
+
+.contact-content { /* New flex container for contact section */
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    text-align: left;
+    max-width: 1000px; /* Constrain width for better layout */
+    margin: 0 auto;
+}
+
+.contact-form-wrapper { /* Wrapper for form and its heading */
+    flex: 7; /* 70% width for the form */
+    max-width: 70%; /* Ensure it respects the flex basis */
+    padding-right: 20px; /* Add some padding if needed */
+    display: flex; /* Make it a flex container to center its children */
+    flex-direction: column;
+    align-items: center; /* Center form elements horizontally */
+}
+
+.contact-form-wrapper h3 {
+    color: #fff;
+    margin-bottom: 40px;
+    text-align: center;
+    width: 100%; /* Ensure heading takes full width */
+}
+
+
+.contact-form { /* Apply max-width to the form itself for better control */
+    max-width: 600px; /* Limit form width even if wrapper is wider */
+    width: 100%; /* Ensure it takes available width up to max-width */
+    margin: 0 auto; /* Center the form within its wrapper */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #444;
+    color: #fff;
+    font-size: 1em;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: #bbb;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: #5a7dff;
+    box-shadow: 0 0 0 3px rgba(90, 125, 255, 0.3);
+}
+
+.contact-image {
+    flex: 3; /* 30% width for the image */
+    max-width: 30%; /* Ensure it respects the flex basis */
+    text-align: center;
+}
+
+.contact-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-send-message {
+    background-color: #5a7dff; /* Blue button */
+    color: #fff;
+    border-color: #5a7dff;
+    padding: 15px 30px; /* Slightly larger padding */
+    font-size: 1.1em;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-send-message:hover {
+    background-color: #3a5aff; /* Darker blue on hover */
+    transform: translateY(-3px); /* Slight lift effect */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+/* Footer */
+.footer {
+    background-color: #1a1a1a; /* Even darker black */
+    color: #ccc;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.footer p {
+    margin-bottom: 0; /* No margin as social links are removed */
+}
+
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .banner-content h2 {
+        font-size: 3.2em;
+    }
+
+    .banner-content p {
+        font-size: 1.2em;
+    }
+
+    .about-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .about-image {
+        max-width: 50%;
+        margin-bottom: 30px;
+    }
+
+    .about-text {
+        max-width: 100%;
+    }
+
+    .contact-content {
+        flex-direction: column-reverse; /* Image on top, form below */
+        text-align: center;
+        max-width: 600px; /* Reduce max-width for column layout */
+    }
+
+    .contact-form-wrapper {
+        max-width: 100%; /* Allow form wrapper to take full width of parent (contact-content) */
+        padding-right: 0;
+    }
+
+    .contact-form {
+        max-width: 100%; /* Allow form to take full width of its wrapper */
+    }
+
+    .contact-image {
+        max-width: 80%; /* Adjust image size for smaller screens */
+        margin-bottom: 30px;
+    }
+
+    .contact-form-wrapper h3 {
+        text-align: center;
+    }
+}
+
+@media (max-width: 880px) {
+    .navbar {
+        display: block; /* Always block to allow height transition */
+        max-height: 0; /* Start hidden */
+        overflow: hidden; /* Hide content */
+        transition: max-height 0.5s ease-out; /* Smooth dropdown animation */
+        width: 100%;
+        order: 3;
+    }
+
+    .navbar.active {
+        max-height: 300px; /* Max height to reveal content, adjust as needed */
+    }
+
+    .navbar ul {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 20px; 
+        background-color: rgba(26, 26, 26, 0.9);
+        border-radius: 5px;
+    }
+
+    .navbar ul li {
+        margin: 10px 0;
+    }
+
+    .menu-toggle {
+        display: flex;
+        position: absolute;
+        right: 20px;
+        top: 30px;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
+    }
+}
+
+@media (max-width: 640px) {    
+    .nav-avatar {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .logo-name {
+        width: 100%;
+        justify-content: center;
+        /* margin-bottom: 15px; */
+    }
+
+    .hero-banner {
+        padding: 120px 0 80px;
+    }
+
+    .banner-content h2 {
+        font-size: 2.5em;
+    }
+
+    .banner-content p {
+        font-size: 1em;
+    }
+
+    .service-grid {
+        grid-template-columns: 1fr; /* Stack services on small screens */
+    }
+
+    .contact-image {
+        /* max-width: 100%; Further adjust image size */
+        width: 50%;
+    }
+
+    .contact-form {
+        padding: 0 10px;
+    }
+
+    .banner-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-secondary {
+        margin-left: 0; /* Remove margin for stacked buttons */
+    }
+}

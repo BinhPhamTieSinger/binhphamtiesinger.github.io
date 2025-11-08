@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TieSinger - Personal Website</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-banner" id="home">
+        <div class="container banner-content">
+            <h2>Hello, I'm {{ name }}</h2>
+            <p><span id="typed-text"></span><span class="typing-cursor"></span></p> <!-- Added span for typing effect -->
+            <div class="banner-buttons">
+                <a href="#about" class="btn btn-primary">Discover More</a>
+                <a href="#contact" class="btn btn-secondary">Contact Me</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-me" id="about">
+        <div class="container about-content">
+            <div class="about-image">
+                <img src="/static/assets/images/aboutme.png" alt="TieSinger Profile">
+                <div class="social-links-about"> <!-- Moved social links here -->
+                    <a href="#"><img src="/static/assets/images/icon-facebook.svg" alt="Facebook"></a>
+                    <a href="#"><img src="/static/assets/images/icon-discord.svg" alt="Discord"></a>
+                    <a href="#"><img src="/static/assets/images/icon-x-twitter.svg" alt="X-Twitter"></a>
+                </div>
+            </div>
+            <div class="about-text">
+                <h3>About Me</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>I am a dedicated developer and musician with a passion for creating beautiful and functional experiences. My journey involves blending the art of sound with the logic of code to build innovative solutions and engaging platforms.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="container">
+            <h3>My Services</h3>
+            <div class="service-grid">
+                <div class="service-item">
+                    <img src="/static/assets/images/icon-forum.png" alt="Forum Icon">
+                    <h4>Forum</h4>
+                    <p>Engage with the community, share ideas, and discuss various topics.</p>
+                    <a href="/forum" class="btn-small">Join Forum</a>
+                </div>
+                <div class="service-item">
+                    <img src="/static/assets/images/icon-announcements.png" alt="Announcements Icon">
+                    <h4>Announcements</h4>
+                    <p>Stay updated with the latest announcements, articles, and updates.</p>
+                    <a href="/announcements" class="btn-small">Read Announcements</a>
+                </div>
+                <div class="service-item">
+                    <img src="/static/assets/images/icon-projects.png" alt="Projects Icon"> <!-- New icon for projects -->
+                    <h4>Projects</h4>
+                    <p>Explore my latest ventures, creative works, and development endeavors.</p>
+                    <a href="/projects" class="btn-small">View Projects</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-me" id="contact">
+        <div class="container contact-content"> <!-- Added contact-content div -->
+            <div class="contact-form-wrapper"> <!-- Wrapper for form -->
+                <h3>Contact Me</h3>
+                <form class="contact-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" rows="6" required></textarea>
+                    <button type="submit" class="btn btn-send-message">Send Message</button> <!-- Added specific class -->
+                </form>
+            </div>
+            <div class="contact-image">
+                <img src="/static/assets/images/contact.png" alt="Contact Image">
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 TieSinger. All rights reserved.</p>
+            <!-- Social links removed from here -->
+        </div>
+    </footer>
+
+    <script src="/static/js/index.js"></script>
+</body>
+</html>

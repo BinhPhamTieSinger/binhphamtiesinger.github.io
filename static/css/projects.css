@@ -1,0 +1,828 @@
+/* static/css/projects.css */
+
+/* Hero Banner for Projects Page */
+.hero-banner-small {
+    background-color: #333; /* Dark background */
+    color: #fff;
+    text-align: center;
+    padding: 120px 0 60px; /* Smaller padding than main hero */
+    position: relative;
+    z-index: 0; /* Below header */
+    margin-bottom: 40px;
+}
+
+.banner-content-small h2 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.banner-content-small p {
+    font-size: 1.2em;
+    color: #ccc;
+}
+
+/* Projects Section (Overview Page) */
+.projects-section {
+    padding: 40px 0;
+    background-color: #f8f8f8;
+}
+
+.projects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.projects-section h3, .future-projects-title {
+    font-size: 2.2em;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #5a7dff;
+    padding-bottom: 10px;
+    display: inline-block; /* To make border-bottom only as wide as text */
+}
+
+/* Specific styling for future projects title margin if needed */
+.future-projects-title {
+    margin-top: 60px; /* Add extra space above future projects */
+}
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px; /* Space between current and future grids */
+}
+
+.project-card {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.project-card img {
+    max-width: 100%;
+    height: 180px; /* Fixed height for consistent card images */
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.project-card h4 {
+    font-size: 1.6em;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+.project-card .project-date {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.project-card .project-short-desc {
+    color: #555;
+    line-height: 1.7;
+    flex-grow: 1; /* Allow description to take available space */
+}
+
+.project-card.placeholder-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px; /* Ensure placeholder has some height */
+    color: #aaa;
+    border: 2px dashed #eee;
+    box-shadow: none;
+    cursor: default;
+}
+
+.project-card.placeholder-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+.project-card.placeholder-card h4 {
+    color: #aaa;
+}
+.project-card.placeholder-card p {
+    color: #bbb;
+}
+
+/* Project Detail Page (New Section) */
+.project-detail-main {
+    background-color: #f8f8f8;
+}
+
+.project-content-section {
+    padding: 40px 0 80px;
+}
+
+.project-full-details {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.project-main-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.project-markdown-rendered {
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 30px;
+    word-wrap: break-word; /* Ensure markdown content wraps */
+}
+
+/* Styling for markdown content */
+.project-markdown-rendered p { margin-bottom: 1em; }
+.project-markdown-rendered h1, .project-markdown-rendered h2, .project-markdown-rendered h3, .project-markdown-rendered h4 {
+    color: #1a1a1a;
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+    line-height: 1.3;
+}
+.project-markdown-rendered h1 { font-size: 2.5em; }
+.project-markdown-rendered h2 { font-size: 2em; }
+.project-markdown-rendered h3 { font-size: 1.6em; }
+.project-markdown-rendered h4 { font-size: 1.3em; }
+
+.project-markdown-rendered ul, .project-markdown-rendered ol {
+    margin-left: 25px;
+    margin-bottom: 1em;
+    list-style-type: disc; /* Default list style */
+}
+.project-markdown-rendered ol {
+    list-style-type: decimal;
+}
+.project-markdown-rendered li {
+    margin-bottom: 0.5em;
+}
+
+.project-markdown-rendered code {
+    background-color: #eee;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 0.9em;
+    word-break: break-all; /* Break long code words */
+}
+.project-markdown-rendered pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 1.5em;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+.project-markdown-rendered pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    word-break: normal; /* Don't break in pre */
+}
+.project-markdown-rendered img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5em 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.project-markdown-rendered a {
+    color: #5a7dff;
+    text-decoration: underline;
+    word-break: break-all;
+}
+.project-markdown-rendered blockquote {
+    border-left: 4px solid #ccc;
+    padding-left: 15px;
+    margin: 1em 0;
+    color: #666;
+}
+
+.project-detail-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.project-detail-actions .btn-delete {
+    background-color: #dc3545; /* Red for delete */
+    border-color: #dc3545;
+}
+.project-detail-actions .btn-delete:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.comments-separator {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 50px 0 30px;
+}
+
+.reactions-section {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    justify-content: center;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.reaction-btn {
+    background: #f0f2f5;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.reaction-btn:hover:not(:disabled) {
+    background-color: #e2e4e7;
+    transform: translateY(-2px);
+}
+
+.reaction-btn.active:not(:disabled) {
+    background-color: #5a7dff;
+    color: #fff;
+    border-color: #5a7dff;
+}
+.reaction-btn.active:not(:disabled):hover {
+    background-color: #3a5aff;
+    border-color: #3a5aff;
+}
+
+.reaction-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.comments-section {
+    margin-top: 20px;
+    padding-right: 10px;
+}
+
+.no-comments {
+    text-align: center;
+    color: #777;
+    margin: 30px 0;
+}
+
+/* --- NEW: Threaded Comment Styles --- */
+.comment-item {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-top: 15px; /* Use margin-top for spacing */
+    position: relative; /* For thread line */
+    /* No margin-bottom, let children define space */
+}
+/* Style for the content *inside* the item */
+.comment-content {
+    padding: 15px;
+}
+
+.comment-children {
+    /* Indent replies */
+    margin-left: 20px;
+    padding-left: 20px;
+    position: relative; /* For the main vertical line */
+}
+
+/* The vertical line for a thread */
+.comment-children::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e0e0e0;
+}
+
+/* The horizontal line connecting child to vertical line */
+.comment-item .comment-thread-line {
+    position: absolute;
+    left: -22px; /* (padding-left) + (width / 2) */
+    top: 25px; /* Align with author avatar/mid-header */
+    width: 22px; /* from .comment-children padding-left */
+    height: 2px;
+    background-color: #e0e0e0;
+}
+/* Don't show connecting line for top-level comments */
+.comment-item.level-0 > .comment-thread-line {
+    display: none;
+}
+/* ------------------------------------- */
+
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+.comment-item .comment-author {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0; /* Adjusted */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em; /* Make icons slightly larger */
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    color: #555;
+}
+
+.btn-icon:hover {
+    background-color: #f0f2f5;
+    color: #1a1a1a;
+}
+
+/* NEW: Specific style for reply button */
+.btn-reply-comment {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+
+.comment-item .comment-author img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.comment-item .comment-date {
+    font-size: 0.8em;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.comment-body {
+    /* Container for text and edit form */
+}
+
+.comment-text-rendered {
+    color: #555;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+/* Apply markdown styles to comments */
+.comment-text-rendered p:last-child { margin-bottom: 0; }
+.comment-text-rendered p { margin-bottom: 0.8em; }
+.comment-text-rendered h1, .comment-text-rendered h2, .comment-text-rendered h3, .comment-text-rendered h4 {
+    color: #1a1a1a; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.3;
+}
+.comment-text-rendered h1 { font-size: 1.8em; }
+.comment-text-rendered h2 { font-size: 1.5em; }
+.comment-text-rendered h3 { font-size: 1.3em; }
+.comment-text-rendered h4 { font-size: 1.1em; }
+.comment-text-rendered ul, .comment-text-rendered ol { margin-left: 20px; margin-bottom: 0.8em; }
+.comment-text-rendered li { margin-bottom: 0.3em; }
+.comment-text-rendered code { background-color: #eee; padding: 2px 4px; border-radius: 4px; font-size: 0.9em; word-break: break-all;}
+.comment-text-rendered pre { background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 8px; overflow-x: auto; margin-bottom: 1em; font-size: 0.9em; }
+.comment-text-rendered pre code { background: transparent; color: inherit; padding: 0; word-break: normal;}
+.comment-text-rendered img { max-width: 100%; border-radius: 5px; margin: 0.5em 0; }
+.comment-text-rendered a { color: #5a7dff; text-decoration: underline; word-break: break-all;}
+.comment-text-rendered blockquote { border-left: 3px solid #ccc; padding-left: 10px; margin: 0.5em 0; color: #666; }
+
+
+.comment-edit-form {
+    margin-top: 10px;
+}
+.comment-edit-textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    resize: vertical;
+    min-height: 60px;
+    font-size: 0.95em;
+}
+.comment-edit-textarea:focus {
+    outline: none;
+    border-color: #5a7dff;
+    box-shadow: 0 0 0 3px rgba(90, 125, 255, 0.1);
+}
+.comment-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+
+/* MODIFIED: New comment form */
+#newCommentFormContainer {
+    margin-top: 30px;
+    /* Add transition for smooth movement */
+    transition: all 0.3s ease-in-out;
+}
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    resize: vertical;
+    min-height: 80px;
+    font-size: 1em;
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: #5a7dff;
+    box-shadow: 0 0 0 3px rgba(90, 125, 255, 0.1);
+}
+
+/* NEW: Actions row for buttons */
+.comment-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+/* Make submit button take remaining space if needed, or just align */
+.comment-form-actions .btn-toggle-preview {
+    margin-right: auto; /* Push other buttons to the right */
+}
+
+/* NEW: Replying to notice */
+#replyingToNotice {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: -10px; /* Pull textarea up */
+}
+
+.login-prompt {
+    text-align: center;
+    margin-top: 30px;
+    color: #777;
+}
+
+/* --- MODIFIED: Markdown Preview Styles --- */
+.markdown-preview-container {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+/* NEW: Actions for modal preview */
+.markdown-preview-actions {
+    margin-bottom: 10px;
+}
+
+.admin-project-content .markdown-preview-container {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.markdown-preview-container h5 {
+    font-size: 0.9em;
+    color: #555;
+    font-weight: 600;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+.markdown-preview {
+    border: 1px solid #e0e0e0;
+    background-color: #fcfcfc;
+    padding: 10px 15px;
+    border-radius: 5px;
+    min-height: 50px;
+    /* Inherit markdown styles */
+    line-height: 1.7;
+    color: #444;
+    word-wrap: break-word;
+}
+/* Scoped styles for preview to match rendered output */
+.markdown-preview p:last-child { margin-bottom: 0; }
+.markdown-preview p { margin-bottom: 0.8em; font-size: 0.95em; }
+.markdown-preview h1, .markdown-preview h2, .markdown-preview h3, .markdown-preview h4 {
+    color: #1a1a1a; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.3;
+}
+.markdown-preview h1 { font-size: 1.8em; }
+.markdown-preview h2 { font-size: 1.5em; }
+.markdown-preview h3 { font-size: 1.3em; }
+.markdown-preview h4 { font-size: 1.1em; }
+.markdown-preview ul, .markdown-preview ol { margin-left: 20px; margin-bottom: 0.8em; font-size: 0.95em; }
+.markdown-preview li { margin-bottom: 0.3em; }
+.markdown-preview code { background-color: #eee; padding: 2px 4px; border-radius: 4px; font-size: 0.9em; word-break: break-all;}
+.markdown-preview pre { background-color: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 8px; overflow-x: auto; margin-bottom: 1em; font-size: 0.9em; }
+.markdown-preview pre code { background: transparent; color: inherit; padding: 0; word-break: normal;}
+.markdown-preview img { max-width: 100%; border-radius: 5px; margin: 0.5em 0; }
+.markdown-preview a { color: #5a7dff; text-decoration: underline; word-break: break-all;}
+.markdown-preview blockquote { border-left: 3px solid #ccc; padding-left: 10px; margin: 0.5em 0; color: #666; font-size: 0.95em; }
+
+
+/* Admin Project Modal Specifics (Used for both project list and detail pages) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 2000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 900px; /* Wider for admin form and preview */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    position: relative;
+    max-height: 90vh; /* Limit height */
+    overflow-y: auto; /* Scroll if content exceeds height */
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.admin-project-content h3 {
+    font-size: 2em;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.admin-project-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1em;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+.form-group textarea#projectDescription {
+    min-height: 200px;
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #5a7dff;
+    box-shadow: 0 0 0 3px rgba(90, 125, 255, 0.1);
+}
+
+.project-card-preview { /* Preview for the card on the /projects list */
+    border: 1px dashed #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fefefe;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.project-card-preview h4 {
+    font-size: 1.4em;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+}
+
+.project-card-preview .preview-card-date {
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 15px;
+}
+.project-card-preview #previewCardImage {
+    max-width: 100%;
+    height: 150px; /* Fixed height for preview image */
+    object-fit: cover;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.form-actions .cancel-button {
+    background-color: #6c757d; /* Gray for cancel */
+    border-color: #6c757d;
+    color: #fff;
+}
+.form-actions .cancel-button:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+
+/* Responsive Design for Projects Page & Detail Page */
+@media (max-width: 768px) {
+    .hero-banner-small {
+        padding: 100px 0 40px;
+    }
+
+    .banner-content-small h2 {
+        font-size: 2.5em;
+    }
+
+    .projects-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .projects-section h3, .future-projects-title {
+        width: 100%;
+        text-align: center;
+        font-size: 1.8em;
+    }
+
+    .project-grid {
+        grid-template-columns: 1fr; /* Stack cards on small screens */
+    }
+
+    .project-full-details {
+        padding: 25px;
+    }
+
+    .project-detail-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .project-detail-actions button, .project-detail-actions a {
+        width: 100%;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10px auto;
+    }
+
+    .close-button {
+        font-size: 28px;
+        top: 10px;
+        right: 15px;
+    }
+
+    .admin-project-content form {
+        gap: 15px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+
+    .reactions-section {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    /* NEW: Adjust thread indentation on mobile */
+    .comment-children {
+        margin-left: 10px;
+        padding-left: 10px;
+    }
+    .comment-item .comment-thread-line {
+        left: -12px;
+        width: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-banner-small {
+        padding: 80px 0 30px;
+    }
+
+    .banner-content-small h2 {
+        font-size: 2em;
+    }
+
+    .banner-content-small p {
+        font-size: 1em;
+    }
+
+    .projects-section {
+        padding: 20px 0;
+    }
+
+    .project-card h4 {
+        font-size: 1.4em;
+    }
+
+    .project-full-details {
+        padding: 15px;
+    }
+
+    .project-markdown-rendered h1 { font-size: 2em; }
+    .project-markdown-rendered h2 { font-size: 1.6em; }
+    .project-markdown-rendered h3 { font-size: 1.4em; }
+    .project-markdown-rendered h4 { font-size: 1.2em; }
+}

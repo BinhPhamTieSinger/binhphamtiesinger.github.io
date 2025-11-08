@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TieSinger</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/login.css"> <!-- New CSS for login/register -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li> <!-- Added Projects to nav -->
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Login</h2>
+            
+            <!-- NEW: Success message block -->
+            {% if success %}
+                <p class="success-message">{{ success }}</p>
+            {% endif %}
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+            
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-auth">Login</button>
+            </form>
+            
+            <!-- NEW: Forgot password link -->
+            <p class="auth-link-forgot"><a href="/forgot-password">Forgot your password?</a></p>
+
+            <div class="oauth-divider">
+                <span>OR</span>
+            </div>
+            <a href="/auth/google" class="btn btn-google">
+                <img src="/static/assets/images/icon-google.png" alt="Google Icon"> Login with Google
+            </a>
+            <p class="auth-link">Don't have an account? <a href="/register">Register Now</a></p>
+        </div>
+    </div>
+
+    <script src="/static/js/index.js"></script>
+</body>
+</html>

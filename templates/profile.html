@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - {{ user_data.username }}</title>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/profile.css"> <!-- New CSS for profile -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header" id="myHeader">
+        <div class="container header-content">
+            <div class="logo-name">
+                <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo">
+                <h1>TieSinger</h1>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/forum">Forum</a></li>
+                    <li><a href="/announcements">Announcements</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    {% if user_data %}
+                        <li>
+                            <a href="/profile" class="profile-nav-link">
+                                <img src="{{ user_data.avatar_url }}" alt="Avatar" class="nav-avatar">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar-wrapper">
+                    <img src="{{ user_data.avatar_url }}" alt="User Avatar" class="profile-avatar" id="profile-main-avatar">
+                    <button class="upload-avatar-btn" id="upload-avatar-trigger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    </button>
+                    <input type="file" id="avatar-upload-input" accept="image/*" style="display: none;">
+                </div>
+                <h2 id="profile-username">{{ user_data.username }}</h2>
+                <p class="profile-email" id="profile-email">{{ user_data.email }}</p>
+
+                <!-- Server-side messages -->
+                {% if error %}
+                    <p class="error-message" id="profile-error">{{ error }}</p>
+                {% elif request.query_params.get('success') %}
+                    <p class="success-message" id="profile-success">{{ request.query_params.get('success') }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Inline edit form (hidden by default) -->
+            <form id="profile-edit-form" class="edit-form hidden" action="/profile/edit" method="post" novalidate>
+                <div class="form-row">
+                    <label for="edit-username">Username</label>
+                    <input type="text" id="edit-username" name="username" value="{{ user_data.username }}" required>
+                </div>
+                <div class="form-row">
+                    <label for="edit-email">Email</label>
+                    <input type="email" id="edit-email" name="email" value="{{ user_data.email }}" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-edit-profile">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" id="edit-cancel">Cancel</button>
+                </div>
+            </form>
+
+            <div class="profile-details">
+                <h3>Account Information</h3>
+                <div class="detail-item">
+                    <span>Username:</span> <strong id="detail-username">{{ user_data.username }}</strong>
+                </div>
+                <div class="detail-item">
+                    <span>Email:</span> <strong id="detail-email">{{ user_data.email }}</strong>
+                </div>
+                <!-- Add more profile details here later -->
+            </div>
+
+            <div class="profile-actions">
+                <a href="/logout" class="btn btn-logout">Logout</a>
+                <!-- Toggle edit form with JS -->
+                <button class="btn btn-edit-profile" id="edit-profile-toggle" type="button">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/index.js"></script>
+    <script src="/static/js/profile.js"></script> <!-- New JS for profile -->
+</body>
+</html>
