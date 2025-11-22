@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements | TieSinger</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/projects.css"> <!-- Reusing project card styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Specific Achievement Styles */
+        .achievement-icon {
+            font-size: 3rem;
+            color: #FFD700; /* Gold */
+            margin-bottom: 10px;
+        }
+        .achievement-date {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="myHeader" class="scrolled"> 
+        <div class="header-container">
+            <div class="brand">
+                <img src="/static/assets/images/logo.png" alt="Logo">
+                <span>TieSinger</span>
+            </div>
+            <nav class="navbar">
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#about">About</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/achievements" class="active-link">Achievements</a></li>
+                    <li><a href="/#contact" class="btn-contact-nav">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="projects-hero">
+        <h1>My <span class="highlight-blue">Legacy</span></h1>
+        <p>Milestones, Awards, and Certifications.</p>
+    </section>
+
+    <section class="projects-container">
+        <div class="grid">
+            <!-- Achievement 1 -->
+            <div class="card fade-in-up">
+                <div class="card-content" style="text-align: center;">
+                    <div class="achievement-icon">🏆</div>
+                    <h3>Hackathon Winner 2024</h3>
+                    <span class="achievement-date">Oct 2024</span>
+                    <p>First place in the Global AI Hackathon for creating the "Guard Bot" project.</p>
+                </div>
+            </div>
+
+            <!-- Achievement 2 -->
+            <div class="card fade-in-up">
+                <div class="card-content" style="text-align: center;">
+                    <div class="achievement-icon">🎓</div>
+                    <h3>CS Degree Honors</h3>
+                    <span class="achievement-date">May 2023</span>
+                    <p>Graduated with First Class Honors in Computer Science.</p>
+                </div>
+            </div>
+
+            <!-- Achievement 3 -->
+            <div class="card fade-in-up">
+                <div class="card-content" style="text-align: center;">
+                    <div class="achievement-icon">⚔️</div>
+                    <h3>10k Server Members</h3>
+                    <span class="achievement-date">Jan 2022</span>
+                    <p>Successfully managed a Minecraft community reaching over 10,000 active players.</p>
+                </div>
+            </div>
+             <!-- Achievement 4 -->
+             <div class="card fade-in-up">
+                <div class="card-content" style="text-align: center;">
+                    <div class="achievement-icon">📜</div>
+                    <h3>Node.js Certified</h3>
+                    <span class="achievement-date">Nov 2023</span>
+                    <p>Professional certification for Backend Development.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PREMIUM FOOTER -->
+    <footer class="modern-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="/static/assets/images/logo.png" alt="Logo">
+                    <span>TieSinger</span>
+                </div>
+                
+                <div class="view-counter-wrapper">
+                    <span class="view-label">System Visits</span>
+                    <div class="digital-badge">
+                        <span class="live-dot"></span>
+                        <span id="view-count-number">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 TieSinger. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script to fetch view count for Achievements page -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Card Animation
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // View Counter Fetcher
+            fetch('/api/views')
+                .then(res => res.json())
+                .then(data => {
+                    const counter = document.getElementById('view-count-number');
+                    if(counter) {
+                        // Format number (e.g., 1,000)
+                        counter.innerText = new Intl.NumberFormat().format(data.count);
+                    }
+                })
+                .catch(err => console.error('Stats Error:', err));
+        });
+    </script>
+</body>
+</html>
