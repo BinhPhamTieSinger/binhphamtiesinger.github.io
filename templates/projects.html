@@ -1,40 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ... Head remains same ... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects | TieSinger</title>
-    <link rel="stylesheet" href="./static/css/style.css">
-    <link rel="stylesheet" href="./static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <!-- Header (Same) -->
     <header id="myHeader" class="scrolled"> 
         <div class="header-container">
             <div class="brand">
-                <img src="./static/assets/images/logo.png" alt="Logo">
+                <img src="/static/assets/images/logo.png" alt="Logo">
                 <span>TieSinger</span>
             </div>
             <nav class="navbar">
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#about">About</a></li>
-                    <li><a href="projects.html" class="active-link">Projects</a></li>
-                    <li><a href="achievements.html">Achievements</a></li>
-                    <li><a href="index.html#contact" class="btn-contact-nav">Contact</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#about">About</a></li>
+                    <li><a href="/projects" class="active-link">Projects</a></li>
+                    <li><a href="/achievements">Achievements</a></li>
+                    <li><a href="/#contact" class="btn-contact-nav">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- Projects Hero (Same) -->
     <section class="projects-hero">
         <h1>My <span class="highlight-blue">Creation</span></h1>
         <p>A collection of my code, servers, and designs.</p>
     </section>
 
+    <!-- Projects Grid -->
     <section class="projects-container">
         <div class="filter-bar">
+            <!-- ... Filters same ... -->
             <button class="filter-btn active" data-filter="all">All</button>
             <button class="filter-btn" data-filter="web">Web Dev</button>
             <button class="filter-btn" data-filter="minecraft">Minecraft</button>
@@ -45,12 +50,13 @@
             <!-- Project 1 -->
             <div class="card" data-category="web">
                 <div class="card-image">
-                    <img src="./static/assets/images/avatar.png" alt="Project 1"> 
+                    <img src="/static/assets/images/avatar.png" alt="Project 1"> 
                 </div>
                 <div class="card-content">
                     <span class="tag">Web Dev</span>
                     <h3>Portfolio V1</h3>
                     <p>The website you are looking at right now.</p>
+                    <!-- Added onclick handler or we handle in JS via class -->
                     <button class="card-btn open-modal-btn" data-id="portfolio">View Detail &rarr;</button>
                 </div>
             </div>
@@ -58,7 +64,7 @@
             <!-- Project 2 -->
             <div class="card" data-category="minecraft">
                 <div class="card-image">
-                    <img src="./static/assets/images/avatar.png" alt="Project 2">
+                    <img src="/static/assets/images/avatar.png" alt="Project 2">
                 </div>
                 <div class="card-content">
                     <span class="tag">Minecraft</span>
@@ -71,7 +77,7 @@
             <!-- Project 3 -->
             <div class="card" data-category="ai">
                 <div class="card-image">
-                    <img src="./static/assets/images/avatar.png" alt="Project 3">
+                    <img src="/static/assets/images/avatar.png" alt="Project 3">
                 </div>
                 <div class="card-content">
                     <span class="tag">AI / Bot</span>
@@ -83,7 +89,7 @@
         </div>
     </section>
 
-    <!-- Modal -->
+    <!-- === PROJECT DETAIL MODAL (Hidden by default) === -->
     <div id="project-modal" class="modal hidden">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -95,7 +101,9 @@
                     <h2 id="modal-title">Project Title</h2>
                     <span id="modal-tag" class="tag">Category</span>
                     <p id="modal-desc">Description goes here...</p>
-                    <div id="modal-tech-stack" class="tech-stack"></div>
+                    <div id="modal-tech-stack" class="tech-stack">
+                        <!-- Icons/Text populated by JS -->
+                    </div>
                     <a id="modal-link" href="#" target="_blank" class="btn btn-primary">Go to Project</a>
                 </div>
             </div>
@@ -106,23 +114,26 @@
         <div class="footer-container">
             <div class="footer-top">
                 <div class="footer-brand">
-                    <img src="./static/assets/images/logo.png" alt="Logo">
+                    <img src="/static/assets/images/logo.png" alt="Logo">
                     <span>TieSinger</span>
                 </div>
+                
+                <!-- The Fancy Counter -->
                 <div class="view-counter-wrapper">
                     <span class="view-label">System Visits</span>
                     <div class="digital-badge">
                         <span class="live-dot"></span>
-                        <span id="view-count-number">...</span>
+                        <span id="view-count-number">Loading...</span>
                     </div>
                 </div>
             </div>
+            
             <div class="footer-bottom">
-                <p>&copy; 2025 TieSinger. Developed with Coffee.</p>
+                <p>&copy; 2025 TieSinger. Developed with Node.js & Coffee.</p>
             </div>
         </div>
     </footer>
 
-    <script src="./static/js/projects.js"></script>
+    <script src="/static/js/projects.js"></script>
 </body>
 </html>

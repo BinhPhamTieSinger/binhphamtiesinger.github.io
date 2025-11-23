@@ -4,39 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TieSinger | Binh Pham</title>
-    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- INTRO LAYER -->
+    <!-- INTRO LAYER (Unchanged) -->
     <div id="intro-layer">
         <div id="intro-logo" class="intro-content">
-            <img src="./static/assets/images/logo.png" alt="TieSinger Logo" class="logo-animate">
+            <img src="/static/assets/images/logo.png" alt="TieSinger Logo" class="logo-animate">
         </div>
         <div id="intro-greeting" class="intro-content hidden">
             <h1>Hello there.<br>I'm TieSinger</h1>
-            <img src="./static/assets/images/avatar.png" alt="TieSinger Avatar" class="avatar-animate">
+            <img src="/static/assets/images/avatar.png" alt="TieSinger Avatar" class="avatar-animate">
         </div>
     </div>
 
     <!-- MAIN CONTENT -->
     <div id="main-app" class="hidden">
         
+        <!-- Header / Navbar (Sticky) -->
         <header id="myHeader">
             <div class="header-container">
                 <div class="brand">
-                    <img src="./static/assets/images/logo.png" alt="Logo">
+                    <img src="/static/assets/images/logo.png" alt="Logo">
                     <span>TieSinger</span>
                 </div>
                 <nav class="navbar">
                     <ul class="nav-links">
                         <li><a href="#">Home</a></li>
                         <li><a href="#about">About</a></li>
-                        <li><a href="projects.html">Projects</a></li>
-                        <li><a href="achievements.html">Achievements</a></li>
+                        <li><a href="/projects">Projects</a></li>
+                        <li><a href="#achievements">Achievements</a></li>
                         <li><a href="#contact" class="btn-contact-nav">Contact</a></li>
                     </ul>
                     <div class="menu-toggle">
@@ -46,10 +47,11 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
+        <!-- Hero Section (Black Theme) -->
         <section class="hero">
             <div class="hero-content">
                 <h1>Hello, I'm TieSinger</h1>
+                <!-- Typing Effect Container -->
                 <p class="subtitle"><span id="typed-text"></span><span class="cursor">|</span></p>
                 
                 <div class="hero-buttons">
@@ -59,13 +61,13 @@
             </div>
         </section>
 
-        <!-- About Section -->
+        <!-- About Section (Bigger Images) -->
         <section id="about" class="section-white">
             <div class="container large-container">
                 <div class="split-layout">
                     <div class="left-col image-col">
                         <div class="avatar-card big-card">
-                            <img src="./static/assets/images/avatar.png" alt="About Avatar">
+                            <img src="/static/assets/images/avatar.png" alt="About Avatar">
                         </div>
                     </div>
                     <div class="right-col text-col">
@@ -93,34 +95,34 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
+        <!-- Contact Section (Fixed Styling) -->
         <section id="contact" class="section-dark">
             <h2 class="center-title">Contact Me</h2>
             <div class="container contact-container">
                 <div class="contact-wrapper">
                     <!-- Form Side -->
                     <div class="form-side">
-                        <!-- IMPORTANT: ID added for JS targeting -->
-                        <form class="contact-form" id="contactForm">
+                        <form class="contact-form">
                             <div class="input-group">
                                 <label>Name</label>
-                                <input type="text" name="name" placeholder="Your Name" required>
+                                <input type="text" placeholder="Your Name" required>
                             </div>
                             <div class="input-group">
                                 <label>Email</label>
-                                <input type="email" name="email" placeholder="Your Email" required>
+                                <input type="email" placeholder="Your Email" required>
                             </div>
                             <div class="input-group">
                                 <label>Message</label>
-                                <textarea name="message" placeholder="Your Message..." rows="5" required></textarea>
+                                <textarea placeholder="Your Message..." rows="5" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary full-width">Send Message</button>
                         </form>
                     </div>
                     
+                    <!-- Image Side -->
                     <div class="image-side">
                         <div class="minecraft-showcase">
-                            <img src="./static/assets/images/contact.png" alt="Contact Avatar">
+                            <img src="/static/assets/images/contact.png" alt="Contact Avatar">
                         </div>
                     </div>
                 </div>
@@ -132,6 +134,6 @@
 
     </div>
 
-    <script src="./static/js/main.js"></script>
+    <script src="/static/js/main.js"></script>
 </body>
 </html>

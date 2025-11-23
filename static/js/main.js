@@ -1,42 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // --- VARIABLES ---
     const introLayer = document.getElementById('intro-layer');
     const stageLogo = document.getElementById('intro-logo');
     const stageGreeting = document.getElementById('intro-greeting');
     const mainApp = document.getElementById('main-app');
 
-    // --- 1. INTRO ANIMATION ---
+    // --- 1. INTRO ANIMATION LOGIC (FIXED) ---
+    // Check if user has visited in this session
     const introShown = sessionStorage.getItem('introShown');
 
     if (introShown) {
+        // If already visited, hide intro immediately and show app
         if(introLayer) introLayer.style.display = 'none';
         if(mainApp) {
             mainApp.classList.remove('hidden');
             mainApp.style.opacity = '1';
         }
-        startTypingEffect();
+        startTypingEffect(); // Start typing immediately
     } else {
+        // If first time, play animation
         runIntroAnimation();
     }
 
     function runIntroAnimation() {
-        if(!introLayer) return;
+        if(!introLayer) return; // Guard clause
+
+        // Logo Animation
         setTimeout(() => {
             stageLogo.classList.add('fade-out');
+
             setTimeout(() => {
                 stageLogo.classList.add('hidden');
+                
+                // Show Greeting
                 stageGreeting.classList.remove('hidden');
                 stageGreeting.classList.add('fade-in');
+
+                // Wait, then fade out
                 setTimeout(() => {
                     stageGreeting.classList.remove('fade-in');
                     stageGreeting.classList.add('fade-out');
+
+                    // Reveal Main Site
                     setTimeout(() => {
                         introLayer.classList.add('fade-out');
+                        
                         setTimeout(() => {
                             introLayer.style.display = 'none';
                             mainApp.classList.remove('hidden');
                             mainApp.classList.add('fade-in');
+                            
+                            // SET FLAG IN SESSION STORAGE
                             sessionStorage.setItem('introShown', 'true');
+                            
                             startTypingEffect();
                         }, 1000);
                     }, 1000);
@@ -45,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // --- 2. SCROLL ---
+    // --- 2. SCROLL EFFECT ---
     window.onscroll = function() {
         const header = document.getElementById("myHeader");
         if (header && window.pageYOffset > 50) { 
@@ -55,7 +72,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- 3. TYPING ---
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if(menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            // You might need to add CSS for .nav-links.active to show it on mobile
+            if(navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '70px';
+                navLinks.style.right = '20px';
+                navLinks.style.background = '#000';
+                navLinks.style.padding = '20px';
+                navLinks.style.borderRadius = '10px';
+            }
+        });
+    }
+
+    // --- 3. TYPING EFFECT ---
     function startTypingEffect() {
         const typedTextElement = document.getElementById('typed-text');
         if (!typedTextElement) return;
@@ -64,12 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let wordIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
+        
         const typingSpeed = 100; 
         const deletingSpeed = 50; 
         const delayBetweenWords = 2000;
 
         function type() {
             const currentWord = words[wordIndex];
+            
             if (isDeleting) {
                 typedTextElement.textContent = currentWord.substring(0, charIndex - 1);
                 charIndex--;
@@ -77,7 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 typedTextElement.textContent = currentWord.substring(0, charIndex + 1);
                 charIndex++;
             }
+
             let currentSpeed = isDeleting ? deletingSpeed : typingSpeed;
+
             if (!isDeleting && charIndex === currentWord.length) {
                 currentSpeed = delayBetweenWords;
                 isDeleting = true;
@@ -86,41 +128,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 wordIndex = (wordIndex + 1) % words.length;
                 currentSpeed = typingSpeed;
             }
+
             setTimeout(type, currentSpeed);
         }
         type(); 
     }
 
-    // --- 4. CONTACT FORM (FORMSPREE) ---
-    const contactForm = document.getElementById('contactForm');
+    // --- 4. CONTACT FORM EMAIL LOGIC (NEW) ---
+    const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Stop page reload
+
+            // Get data
+            const name = contactForm.querySelector('input[type="text"]').value;
+            const email = contactForm.querySelector('input[type="email"]').value;
+            const message = contactForm.querySelector('textarea').value;
             const btn = contactForm.querySelector('button');
+
+            // Change button state
             const originalText = btn.innerText;
             btn.innerText = "Sending...";
             btn.disabled = true;
 
-            const formData = new FormData(contactForm);
-
-            // REPLACE 'YOUR_FORMSPREE_ID' WITH YOUR ACTUAL ID (e.g., xzyqoprk)
             try {
-                const response = await fetch("https://formspree.io/f/movbpyzb", {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                const response = await fetch('/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message })
                 });
 
-                if (response.ok) {
-                    alert("Message sent successfully!");
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Message sent successfully! I will get back to you soon.");
                     contactForm.reset();
                 } else {
-                    alert("Oops! There was a problem sending your form.");
+                    alert("Failed to send message. Please try again.");
                 }
             } catch (error) {
-                alert("Error connecting to email service.");
+                console.error("Error:", error);
+                alert("An error occurred.");
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
