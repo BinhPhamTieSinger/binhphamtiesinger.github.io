@@ -2,3 +2,5 @@
 node_modules
 .DS_Store
 .git copy
+# Local Netlify folder
+.netlify

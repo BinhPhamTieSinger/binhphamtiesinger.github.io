@@ -6,12 +6,13 @@ const fs = require('fs'); // File System module for View Counter
 const app = express();
 
 const PORT = process.env.PORT || 5000;
-const VIEWS_FILE = path.join(__dirname, 'views.json');
+const BASE_DIR = path.resolve(__dirname, '..');
+const VIEWS_FILE = path.join(BASE_DIR, 'views.json');
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use('/static', express.static(path.join(BASE_DIR, 'static')));
 
 // --- VIEW COUNTER LOGIC ---
 let viewData = { count: 0, ips: [] };
@@ -49,7 +50,7 @@ const trackViews = (req, res, next) => {
 
 // Apply tracking only to the home page
 app.get('/', trackViews, (req, res) => {
-    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
+    res.sendFile(path.join(BASE_DIR, 'templates', 'index.html'));
 });
 
 // Endpoint to get view count (Optional: if you want to show it on frontend)
@@ -58,11 +59,11 @@ app.get('/api/views', (req, res) => {
 });
 
 app.get('/projects', (req, res) => {
-    res.sendFile(path.join(__dirname, 'templates', 'projects.html'));
+    res.sendFile(path.join(BASE_DIR, 'templates', 'projects.html'));
 });
 
 app.get('/achievements', (req, res) => {
-    res.sendFile(path.join(__dirname, 'templates', 'achievements.html'));
+    res.sendFile(path.join(BASE_DIR, 'templates', 'achievements.html'));
 });
 
 // --- EMAIL LOGIC ---
@@ -126,6 +127,9 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server running at http://localhost:${PORT}`);
+// });
+
+app.use("/.netlify/functions/server", router);
+module.exports.handler = serverless(app);
