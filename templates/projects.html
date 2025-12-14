@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... Head remains same ... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects | TieSinger</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/projects.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Header (Same) -->
-    <header id="myHeader" class="scrolled"> 
+    <!-- Header / Navbar -->
+    <header id="myHeader">
         <div class="header-container">
             <div class="brand">
                 <img src="/static/assets/images/logo.png" alt="Logo">
@@ -22,118 +22,143 @@
                 <ul class="nav-links">
                     <li><a href="/">Home</a></li>
                     <li><a href="/#about">About</a></li>
-                    <li><a href="/projects" class="active-link">Projects</a></li>
+                    <li><a href="/projects">Projects</a></li>
                     <li><a href="/achievements">Achievements</a></li>
                     <li><a href="/#contact" class="btn-contact-nav">Contact</a></li>
                 </ul>
+                <div class="menu-toggle">
+                    <span></span><span></span><span></span>
+                </div>
             </nav>
         </div>
     </header>
 
-    <!-- Projects Hero (Same) -->
+    <!-- Projects Hero -->
     <section class="projects-hero">
-        <h1>My <span class="highlight-blue">Creation</span></h1>
-        <p>A collection of my code, servers, and designs.</p>
+        <h1>My Projects</h1>
+        <p>A collection of innovative solutions I've built across AI, web development, and automation</p>
     </section>
 
     <!-- Projects Grid -->
-    <section class="projects-container">
-        <div class="filter-bar">
-            <!-- ... Filters same ... -->
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="web">Web Dev</button>
-            <button class="filter-btn" data-filter="minecraft">Minecraft</button>
-            <button class="filter-btn" data-filter="ai">AI</button>
-        </div>
+    <section class="projects-section">
+        <div class="projects-container">
+            <div class="projects-grid">
+                
+                <!-- Project 1: ML & DL Learning Platform -->
+                <div class="project-card" data-project="ml-platform">
+                    <div class="project-image">
+                        <img src="/static/assets/images/projects/ml-platform.png" alt="ML Platform">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">ML & DL Learning Platform</h3>
+                        <p class="project-summary">A comprehensive web-based platform designed to help users learn Machine Learning and Deep Learning concepts through interactive tutorials and hands-on examples.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">TensorFlow</span>
+                            <span class="tag">React</span>
+                            <span class="tag">Education</span>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="grid">
-            <!-- Project 1 -->
-            <div class="card" data-category="web">
-                <div class="card-image">
-                    <img src="/static/assets/images/avatar.png" alt="Project 1"> 
+                <!-- Project 2: Geometry Problem Parser -->
+                <div class="project-card" data-project="geometry-parser">
+                    <div class="project-image">
+                        <img src="/static/assets/images/projects/placeholder.png" alt="Geometry Parser">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Geometry Problem Parser</h3>
+                        <p class="project-summary">An automated tool that converts geometry problems into visual representations using the GeoGebra Engine for enhanced learning and problem visualization.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">GeoGebra API</span>
+                            <span class="tag">NLP</span>
+                            <span class="tag">Automation</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-content">
-                    <span class="tag">Web Dev</span>
-                    <h3>Portfolio V1</h3>
-                    <p>The website you are looking at right now.</p>
-                    <!-- Added onclick handler or we handle in JS via class -->
-                    <button class="card-btn open-modal-btn" data-id="portfolio">View Detail &rarr;</button>
-                </div>
-            </div>
 
-            <!-- Project 2 -->
-            <div class="card" data-category="minecraft">
-                <div class="card-image">
-                    <img src="/static/assets/images/avatar.png" alt="Project 2">
+                <!-- Project 3: AI Agent Chatbot -->
+                <div class="project-card" data-project="ai-chatbot">
+                    <div class="project-image">
+                        <img src="/static/assets/images/projects/placeholder.png" alt="AI Chatbot">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">AI Agent Chatbot System</h3>
+                        <p class="project-summary">An intelligent chatbot powered by AI agents that can organize tasks, integrate with email and Google Drive, and provide personalized assistance.</p>
+                        <div class="project-tags">
+                            <span class="tag">Node.js</span>
+                            <span class="tag">AI Agents</span>
+                            <span class="tag">API Integration</span>
+                            <span class="tag">Automation</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-content">
-                    <span class="tag">Minecraft</span>
-                    <h3>Survival Server</h3>
-                    <p>A custom plugin setup for a hardcore survival server.</p>
-                    <button class="card-btn open-modal-btn" data-id="minecraft">View Detail &rarr;</button>
-                </div>
-            </div>
 
-            <!-- Project 3 -->
-            <div class="card" data-category="ai">
-                <div class="card-image">
-                    <img src="/static/assets/images/avatar.png" alt="Project 3">
+                <!-- Project 4: ThetaMind Math Platform -->
+                <div class="project-card" data-project="thetamind">
+                    <div class="project-image">
+                        <img src="/static/assets/images/projects/placeholder.png" alt="ThetaMind">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">ThetaMind Math Platform</h3>
+                        <p class="project-summary">An interactive web platform that helps students learn mathematics more effectively through gamified exercises and skill-building challenges.</p>
+                        <div class="project-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">Education</span>
+                            <span class="tag">Gamification</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-content">
-                    <span class="tag">AI / Bot</span>
-                    <h3>Discord Guard Bot</h3>
-                    <p>An automated moderation bot using OpenAI.</p>
-                    <button class="card-btn open-modal-btn" data-id="discordbot">View Detail &rarr;</button>
+
+                <!-- Project 5: Unity Games -->
+                <div class="project-card" data-project="unity-games">
+                    <div class="project-image">
+                        <img src="/static/assets/images/projects/placeholder.png" alt="Unity Games">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Unity Game Development</h3>
+                        <p class="project-summary">A collection of immersive games built with Unity Engine, featuring engaging gameplay mechanics and polished user experiences.</p>
+                        <div class="project-tags">
+                            <span class="tag">Unity</span>
+                            <span class="tag">C#</span>
+                            <span class="tag">Game Design</span>
+                            <span class="tag">3D Graphics</span>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- === PROJECT DETAIL MODAL (Hidden by default) === -->
-    <div id="project-modal" class="modal hidden">
+    <!-- Modal Template -->
+    <div id="projectModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h2 id="modalTitle">Project Title</h2>
+            </div>
             <div class="modal-body">
                 <div class="modal-image">
-                    <img id="modal-img" src="" alt="Project Detail">
+                    <img id="modalImage" src="" alt="Project Demo" style="display:none;">
+                    <div id="modalImagePlaceholder" class="project-placeholder">🎯</div>
                 </div>
-                <div class="modal-info">
-                    <h2 id="modal-title">Project Title</h2>
-                    <span id="modal-tag" class="tag">Category</span>
-                    <p id="modal-desc">Description goes here...</p>
-                    <div id="modal-tech-stack" class="tech-stack">
-                        <!-- Icons/Text populated by JS -->
+                <div class="modal-description">
+                    <h3>About This Project</h3>
+                    <div id="modalDescription">
+                        <p>Project description goes here...</p>
                     </div>
-                    <a id="modal-link" href="#" target="_blank" class="btn btn-primary">Go to Project</a>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <a id="modalLink" href="#" class="modal-link">Visit Project</a>
             </div>
         </div>
     </div>
 
-    <footer class="modern-footer">
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <img src="/static/assets/images/logo.png" alt="Logo">
-                    <span>TieSinger</span>
-                </div>
-                
-                <!-- The Fancy Counter -->
-                <div class="view-counter-wrapper">
-                    <span class="view-label">System Visits</span>
-                    <div class="digital-badge">
-                        <span class="live-dot"></span>
-                        <span id="view-count-number">Loading...</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 TieSinger. Developed with Node.js & Coffee.</p>
-            </div>
-        </div>
-    </footer>
-
     <script src="/static/js/projects.js"></script>
+    <script src="/static/js/main.js"></script>
 </body>
 </html>

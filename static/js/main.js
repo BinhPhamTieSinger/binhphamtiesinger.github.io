@@ -77,19 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if(menuToggle) {
         menuToggle.addEventListener('click', () => {
-            // You might need to add CSS for .nav-links.active to show it on mobile
-            if(navLinks.style.display === 'flex') {
-                navLinks.style.display = 'none';
-            } else {
-                navLinks.style.display = 'flex';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '70px';
-                navLinks.style.right = '20px';
-                navLinks.style.background = '#000';
-                navLinks.style.padding = '20px';
-                navLinks.style.borderRadius = '10px';
-            }
+            navLinks.classList.toggle('mobile-active');
+            menuToggle.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('mobile-active');
+                menuToggle.classList.remove('active');
+            });
         });
     }
 
@@ -141,9 +138,9 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault(); // Stop page reload
 
             // Get data
-            const name = contactForm.querySelector('input[type="text"]').value;
-            const email = contactForm.querySelector('input[type="email"]').value;
-            const message = contactForm.querySelector('textarea').value;
+            const name = contactForm.querySelector('input[name="name"]').value;
+            const email = contactForm.querySelector('input[name="email"]').value;
+            const message = contactForm.querySelector('textarea[name="message"]').value;
             const btn = contactForm.querySelector('button');
 
             // Change button state

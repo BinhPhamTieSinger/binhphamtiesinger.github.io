@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs'); // File System module for View Counter
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const VIEWS_FILE = path.join(__dirname, 'views.json');
 
 // Middleware

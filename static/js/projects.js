@@ -1,136 +1,197 @@
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- 1. PROJECT DATA STORAGE ---
-    const projectData = {
-        'portfolio': {
-            title: 'Portfolio V1',
-            category: 'Web Development',
-            image: '/static/assets/images/avatar.png',
-            description: 'This is my personal portfolio website designed from scratch using Node.js, Express, and pure CSS. It features a custom view counter, email integration via Nodemailer, and a dark-themed aesthetic inspired by gaming UI. It is fully responsive and optimized for performance.',
-            tech: ['Node.js', 'Express', 'HTML5', 'CSS3', 'Nodemailer'],
-            link: 'https://github.com/binhphamtiesinger' // Replace with real link
-        },
-        'minecraft': {
-            title: 'Hardcore Survival',
-            category: 'Minecraft Server',
-            image: '/static/assets/images/avatar.png',
-            description: 'A heavily customized Spigot server designed for hardcore survival gameplay. Features include a balanced economy system, custom land claiming plugins, and anti-cheat integration. Optimized for high player counts with minimal lag.',
-            tech: ['Java', 'Spigot API', 'MySQL', 'Plugin Dev'],
-            link: '#'
-        },
-        'discordbot': {
-            title: 'Discord Guard Bot',
-            category: 'AI Automation',
-            image: '/static/assets/images/avatar.png',
-            description: 'An advanced Discord bot that utilizes OpenAI API to filter toxic messages and moderate community channels automatically. It also includes utility commands for server management and user engagement tracking.',
-            tech: ['Python', 'Discord.py', 'OpenAI API', 'MongoDB'],
-            link: '#'
-        }
-    };
+// Project Data
+const projectsData = {
+    'ml-platform': {
+        title: 'ML & DL Learning Platform',
+        image: '/static/assets/images/projects/ml-platform.png',
+        icon: '🧠',
+        description: `
+            <p>A comprehensive web-based platform designed to democratize Machine Learning and Deep Learning education through interactive tutorials and hands-on coding exercises.</p>
+            
+            <h3>Key Features:</h3>
+            <ul>
+                <li>Interactive tutorials with embedded code editors</li>
+                <li>Real-time neural network visualizer</li>
+                <li>Project gallery with practical examples</li>
+                <li>Community forum and progress tracking</li>
+            </ul>
+            
+            <h3>Tech Stack:</h3>
+            <p>React, Node.js, TensorFlow.js, Python, Flask, MongoDB</p>
+        `,
+        link: '#'
+    },
+    'geometry-parser': {
+        title: 'Geometry Problem Parser',
+        image: '/static/assets/images/projects/geometry-parser.jpg',
+        icon: '📐',
+        description: `
+            <p>An innovative automation tool that converts textual geometry problems into visual representations using NLP and the GeoGebra Engine.</p>
+            
+            <h3>Key Features:</h3>
+            <ul>
+                <li>NLP-powered problem understanding</li>
+                <li>Automatic geometric diagram generation</li>
+                <li>Step-by-step solution guidance</li>
+                <li>Export in multiple formats (SVG, PNG)</li>
+            </ul>
+            
+            <h3>Tech Stack:</h3>
+            <p>Python, GeoGebra API, spaCy, NLTK, FastAPI</p>
+        `,
+        link: '#'
+    },
+    'ai-chatbot': {
+        title: 'AI Agent Chatbot System',
+        image: '/static/assets/images/projects/ai-chatbot.jpg',
+        icon: '🤖',
+        description: `
+            <p>A sophisticated AI-powered digital assistant leveraging advanced agents for task management and seamless productivity tool integration.</p>
+            
+            <h3>Key Features:</h3>
+            <ul>
+                <li>Multi-agent architecture for specialized tasks</li>
+                <li>Email and Google Drive integration</li>
+                <li>Task scheduling and calendar management</li>
+                <li>Voice interaction support</li>
+            </ul>
+            
+            <h3>Tech Stack:</h3>
+            <p>Node.js, OpenAI GPT-4, LangChain, Google APIs, MongoDB</p>
+        `,
+        link: '#'
+    },
+    'thetamind': {
+        title: 'ThetaMind Math Platform',
+        image: '/static/assets/images/projects/thetamind.jpg',
+        icon: '📊',
+        description: `
+            <p>A revolutionary mathematics learning platform combining gamification with adaptive learning algorithms to make math engaging and accessible.</p>
+            
+            <h3>Key Features:</h3>
+            <ul>
+                <li>AI-powered adaptive difficulty adjustment</li>
+                <li>Gamified challenges with leaderboards</li>
+                <li>Interactive visualizations and graphs</li>
+                <li>Detailed progress analytics</li>
+            </ul>
+            
+            <h3>Tech Stack:</h3>
+            <p>React, Node.js, Express, PostgreSQL, D3.js, Redux</p>
+        `,
+        link: '#'
+    },
+    'unity-games': {
+        title: 'Unity Game Development',
+        image: '/static/assets/images/projects/unity-games.jpg',
+        icon: '🎮',
+        description: `
+            <p>A portfolio of immersive games developed using Unity Engine, showcasing expertise in game mechanics, 3D graphics, and player experience design.</p>
+            
+            <h3>Featured Games:</h3>
+            <ul>
+                <li><strong>Cyber Runner:</strong> Fast-paced endless runner</li>
+                <li><strong>Puzzle Nexus:</strong> 3D physics-based puzzles</li>
+                <li><strong>Space Odyssey:</strong> Top-down space shooter</li>
+                <li><strong>Dungeon Quest:</strong> RPG dungeon crawler</li>
+            </ul>
+            
+            <h3>Tech Stack:</h3>
+            <p>Unity Engine, C#, Blender, Custom Shaders</p>
+        `,
+        link: '#'
+    }
+};
 
-    // --- 2. MODAL LOGIC ---
-    const modal = document.getElementById('project-modal');
-    const closeModal = document.querySelector('.close-modal');
-    const modalImg = document.getElementById('modal-img');
-    const modalTitle = document.getElementById('modal-title');
-    const modalTag = document.getElementById('modal-tag');
-    const modalDesc = document.getElementById('modal-desc');
-    const modalTech = document.getElementById('modal-tech-stack');
-    const modalLink = document.getElementById('modal-link');
-    const openBtns = document.querySelectorAll('.open-modal-btn');
+// DOM Elements
+const modal = document.getElementById('projectModal');
+const modalClose = document.querySelector('.modal-close');
+const projectCards = document.querySelectorAll('.project-card');
+const modalImage = document.getElementById('modalImage');
+const modalImagePlaceholder = document.getElementById('modalImagePlaceholder');
 
-    openBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const projectId = btn.getAttribute('data-id');
-            const data = projectData[projectId];
-
-            if (data) {
-                // Populate Modal
-                modalImg.src = data.image;
-                modalTitle.textContent = data.title;
-                modalTag.textContent = data.category;
-                modalDesc.textContent = data.description;
-                modalLink.href = data.link;
-
-                // Populate Tech Stack
-                modalTech.innerHTML = ''; // Clear old
-                data.tech.forEach(tech => {
-                    const span = document.createElement('span');
-                    span.className = 'tech-badge';
-                    span.textContent = tech;
-                    modalTech.appendChild(span);
-                });
-
-                // Show Modal
-                modal.classList.remove('hidden');
-                // Small delay to allow display:flex to apply before opacity transition
-                setTimeout(() => {
-                    modal.classList.add('show');
-                }, 10);
+// Open Modal
+projectCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const projectId = card.getAttribute('data-project');
+        const project = projectsData[projectId];
+        
+        if (project) {
+            // Update modal content
+            document.getElementById('modalTitle').textContent = project.title;
+            document.getElementById('modalDescription').innerHTML = project.description;
+            document.getElementById('modalLink').href = project.link;
+            
+            // Try to load image, fallback to icon
+            if (project.image) {
+                modalImage.src = project.image;
+                modalImage.style.display = 'block';
+                modalImagePlaceholder.style.display = 'none';
+                
+                // Handle image load error
+                modalImage.onerror = function() {
+                    modalImage.style.display = 'none';
+                    modalImagePlaceholder.textContent = project.icon;
+                    modalImagePlaceholder.style.display = 'flex';
+                };
+            } else {
+                modalImage.style.display = 'none';
+                modalImagePlaceholder.textContent = project.icon;
+                modalImagePlaceholder.style.display = 'flex';
             }
-        });
-    });
-
-    // Close Modal Function
-    const hideModal = () => {
-        modal.classList.remove('show');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300); // Match CSS transition time
-    };
-
-    if(closeModal) closeModal.addEventListener('click', hideModal);
-
-    // Click outside to close
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            hideModal();
+            
+            // Show modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
     });
-
-    // --- 3. ANIMATION & FILTERS (Existing code) ---
-    const cards = document.querySelectorAll('.card');
-    cards.forEach((card, index) => {
-        setTimeout(() => {
-            card.classList.add('fade-in-up');
-        }, index * 150);
-    });
-
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const filterValue = btn.getAttribute('data-filter');
-
-            cards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                if (filterValue === 'all' || category === filterValue) {
-                    card.style.display = 'block';
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 50);
-                } else {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        card.style.display = 'none';
-                    }, 300);
-                }
-            });
-        });
-    });
-
-    // --- 4. FETCH VIEW COUNT (Optional Display) ---
-    fetch('/api/views')
-        .then(res => res.json())
-        .then(data => {
-            const viewDisplay = document.getElementById('view-count-number');
-            if(viewDisplay) {
-                // Adds comma separation (e.g., 1,024)
-                viewDisplay.textContent = new Intl.NumberFormat().format(data.count);
-            }
-        })
-        .catch(err => console.error('Error fetching views:', err));
 });
+
+// Close Modal
+modalClose.addEventListener('click', closeModal);
+
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+
+function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+// Escape key to close modal
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Scroll effect for header (reuse from main.js logic)
+window.onscroll = function() {
+    const header = document.getElementById("myHeader");
+    if (header && window.pageYOffset > 50) { 
+        header.classList.add("scrolled");
+    } else if (header) {
+        header.classList.remove("scrolled");
+    }
+};
+
+// Mobile menu toggle
+const menuToggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+if(menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('mobile-active');
+        menuToggle.classList.toggle('active');
+    });
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('mobile-active');
+            menuToggle.classList.remove('active');
+        });
+    });
+}
