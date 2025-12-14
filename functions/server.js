@@ -4,6 +4,8 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const fs = require('fs'); // File System module for View Counter
 const app = express();
+const serverless = require("serverless-http");
+const router = express.Router();
 
 const PORT = process.env.PORT || 5000;
 const BASE_DIR = path.resolve(__dirname, '..');
