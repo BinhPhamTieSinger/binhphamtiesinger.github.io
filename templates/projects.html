@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects | TieSinger</title>
+    <link rel="icon" type="image/x-icon" href="/static/assets/images/favicon.ico">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/projects.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -160,24 +161,5 @@
 
     <script src="/static/js/projects.js"></script>
     <script src="/static/js/main.js"></script>
-    <script>
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
-        
-        if(menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                navLinks.classList.toggle('mobile-active');
-                menuToggle.classList.toggle('active');
-            });
-
-            // Close menu when clicking on a link
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', () => {
-                    navLinks.classList.remove('mobile-active');
-                    menuToggle.classList.remove('active');
-                });
-            });
-        }
-    </script>
 </body>
 </html>
